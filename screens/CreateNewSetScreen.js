@@ -1,128 +1,167 @@
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,TextInput,ScrollView} from 'react-native';
+import React, { Component } from "react";
+import {
+  TouchableOpacity,
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  ScrollView
+} from "react-native";
+import { Navigation } from "react-native-navigation";
+import SQLite from "react-native-sqlite-storage";
+import { Icon } from "react-native-elements";
 
-type Props = {};
-export default class App extends Component<Props> {
-    constructor(props) {
-        super(props);
-        this.state = {nameOfTheSet: ''};
-        this.state = {descriptionOfTheSet: ''};
-        this.state = {concept: ''};
-        this.state = {definition: ''};
-    }
+var db = SQLite.openDatabase({
+  name: "md.db",
+  createFromLocation: 1
+});
 
+export default class App extends Component {
+  state = {
+    rows: [],
+    nameOfTheSet: "",
+    descriptionOfTheSet: "",
+    wordsAndDefinitions: []
+  };
 
+  goToScreen = screenName => {
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: screenName
+      }
+    });
+  };
 
-    render() {
-        return (
-            <View style={styles.container}>
-                <ScrollView>
-                <Text style={{marginTop: 20, fontSize: 20, margin: 10, fontWeight: 'bold', textAlign: 'center'}}>Stwórz zestaw</Text>
-                <Text style={styles.welcome}>Nazwa zestawu: </Text>
-                <TextInput
-                    style={styles.text}
-                    placeholder="Nazwa zestawu"
-                    onChangeText={(nameOfTheSet) => this.setState({nameOfTheSet})}
-                />
-                {/*<Text style={{padding: 10, fontSize: 42}}>*/}
-                    {/*{this.state.value.split(' ').map((word) => word && '⚽').join(' ')}*/}
-                {/*</Text>*/}
-                <Text style={styles.welcome}>Opis zestawu: </Text>
-                <TextInput
-                    style={styles.text}
-                    placeholder="Opis zestawu"
-                    onChangeText={(descriptionOfTheSet) => this.setState({descriptionOfTheSet})}
-                />
-                <Text style={styles.welcome}>Fiszki: </Text>
-                    <View style={styles.tablica}>
-                        <Text style={styles.welcome}>Pojęcie: </Text>
-                        <TextInput
-                            style={styles.text}
-                            onChangeText={(concept) => this.setState({concept})}
-                        />
-                        <Text style={styles.welcome}>Definicja:  </Text>
-                        <TextInput
-                            style={styles.text}
-                            onChangeText={(definition) => this.setState({definition})}
-                        />
+  addSetToDatabase = () => {
+    const query = `INSERT INTO sets VALUES ('${this.state.nameOfTheSet}', '${
+      this.state.descriptionOfTheSet
+    }', '${JSON.stringify(this.state.wordsAndDefinitions)}') `;
+    return db.executeSql(query);
+  };
 
-                    </View>
-                    <View style={styles.tablica}>
-                        <Text style={styles.welcome}>Pojęcie: </Text>
-                        <TextInput
-                        style={styles.text}
-                        onChangeText={(concept) => this.setState({concept})}
-                    />
-                        <Text style={styles.welcome}>Definicja:  </Text>
-                        <TextInput
-                            style={styles.text}
-                            onChangeText={(definition) => this.setState({definition})}
-                        />
+  saveSet = () => {
+    this.addSetToDatabase();
+    this.goToScreen("App");
+  };
 
-                    </View>
-                    <View style={styles.tablica}>
-                        <Text style={styles.welcome}>Pojęcie: </Text>
-                        <TextInput
-                            style={styles.text}
-                            onChangeText={(concept) => this.setState({concept})}
-                        />
-                        <Text style={styles.welcome}>Definicja:  </Text>
-                        <TextInput
-                            style={styles.text}
-                            onChangeText={(definition) => this.setState({definition})}
-                        />
+  addNewWords = () => {
+    let wordsAndDefinitions = {
+      wordValue: "",
+      definitionValue: ""
+    };
+    let newRow = (
+      <View style={styles.wordsContainer}>
+        <View
+          style={{ display: "flex", alignItems: "flex-end", marginRight: 10 }}
+        >
+          <Icon
+            name="check-circle"
+            type="font-awesome"
+            color="#841584"
+            onPress={() => this.saveWords(wordsAndDefinitions)}
+          />
+        </View>
+        <TextInput
+          style={styles.textInput}
+          placeholder="pojęcie"
+          onChangeText={word => (wordsAndDefinitions.wordValue = word)}
+        />
 
-                    </View>
-                    <View style={styles.tablica}>
-                        <Text style={styles.welcome}>Pojęcie: </Text>
-                        <TextInput
-                            style={styles.text}
-                            onChangeText={(concept) => this.setState({concept})}
-                        />
-                        <Text style={styles.welcome}>Definicja:  </Text>
-                        <TextInput
-                            style={styles.text}
-                            onChangeText={(definition) => this.setState({definition})}
-                        />
+        <TextInput
+          style={styles.textInput}
+          placeholder="definicja"
+          onChangeText={definition => {
+            wordsAndDefinitions.definitionValue = definition;
+          }}
+        />
+      </View>
+    );
+    this.setState({
+      rows: [...this.state.rows, newRow]
+    });
+  };
 
-                    </View>
+  saveWords = wordsAndDefinitions => {
+    this.setState({
+      wordsAndDefinitions: [
+        ...this.state.wordsAndDefinitions,
+        wordsAndDefinitions
+      ]
+    });
+  };
 
-                </ScrollView>
-            </View>
-        );
-    }
+  render() {
+    const { rows } = this.state;
+    return (
+      <View style={styles.container}>
+        <ScrollView style={styles.scrollContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Nazwa zestawu"
+            onChangeText={nameOfTheSet => this.setState({ nameOfTheSet })}
+          />
+
+          <TextInput
+            style={styles.textInput}
+            placeholder="Opis zestawu"
+            onChangeText={descriptionOfTheSet =>
+              this.setState({ descriptionOfTheSet })
+            }
+          />
+          {rows}
+
+          <View style={{ display: "flex", alignItems: "center" }}>
+            <TouchableOpacity
+              style={styles.btnAddWords}
+              onPress={this.addNewWords}
+            >
+              <Text style={styles.btnAddWordsText}>Dodaj słówka</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Button
+            onPress={this.saveSet}
+            title="Zapisz zestaw"
+            color="#841584"
+          />
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: '#f0f0f0',
-        alignItems: 'center'
-    },
-    welcome: {
-        marginTop: 5,
-        fontSize: 20,
-        margin: 10,
-        fontWeight: 'bold'
-    },
-    text: {
-        height: 40,
-        marginLeft: 20,
-        marginRight: 20,
-        width: 350,
-        borderStyle: 'solid',
-        borderWidth: 1,
-        borderColor: 'black'
-    },
-    tablica: {
-        paddingTop: 10,
-        paddingBottom: 15,
-        borderWidth: 1,
-        borderColor: 'black',
-        borderStyle: 'solid',
-        margin: 10,
-        backgroundColor: 'silver'
-    }
-
+  container: {
+    flex: 1,
+    backgroundColor: "#f0f0f0"
+  },
+  textInput: {
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: "#841584",
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 5,
+    marginBottom: 5
+  },
+  wordsContainer: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "black",
+    borderStyle: "solid",
+    margin: 10,
+    backgroundColor: "silver"
+  },
+  btnAddWords: {
+    margin: 10,
+    borderWidth: 1,
+    width: "40%",
+    borderRadius: 5,
+    padding: 5
+  },
+  btnAddWordsText: {
+    fontSize: 14,
+    textAlign: "center"
+  }
 });
