@@ -17,7 +17,7 @@ var db = SQLite.openDatabase({
   createFromLocation: 1
 });
 
-export default class App extends Component {
+export default class CreateNewSet extends Component {
   state = {
     rows: [],
     nameOfTheSet: "",
