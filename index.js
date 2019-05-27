@@ -1,46 +1,44 @@
-import {Navigation} from "react-native-navigation";
-import App from './App';
-import SettingsScreen from './screens/SettingsScreen';
-import MySetsScreen from './screens/MySetsScreen';
-import CreateNewSetScreen from './screens/CreateNewSetScreen';
-import FlashcardsScreen from './screens/FlashcardsScreen';
-import LearnScreen from './screens/LearnScreen';
-import WritingScreen from './screens/WritingScreen';
-import ChoiceAbcdScreen from './screens/ChoiceAbcdScreen';
-import TestScreen from './screens/TestScreen';
-import SetScreen from './screens/SetScreen';
+import { Navigation } from "react-native-navigation";
+import App from "./App";
+import Settings from "./screens/Settings";
+import MySets from "./screens/MySets";
+import CreateNewSet from "./screens/CreateNewSet";
+import Flashcards from "./screens/Flashcards";
+import Learn from "./screens/Learn";
+import Writing from "./screens/Writing";
+import ChoiceAbcd from "./screens/ChoiceAbcd";
+import Test from "./screens/Test";
+import Set from "./screens/Set";
 
-
-Navigation.registerComponent('App', () => App);
-Navigation.registerComponent('SettingsScreen', () => SettingsScreen);
-Navigation.registerComponent('MySetsScreen', () => MySetsScreen);
-Navigation.registerComponent('CreateNewSetScreen', () => CreateNewSetScreen);
-Navigation.registerComponent('FlashcardsScreen', () => FlashcardsScreen);
-Navigation.registerComponent('LearnScreen', () => LearnScreen);
-Navigation.registerComponent('WritingScreen', () => WritingScreen);
-Navigation.registerComponent('ChoiceAbcdScreen', () => ChoiceAbcdScreen);
-Navigation.registerComponent('TestScreen', () => TestScreen);
-Navigation.registerComponent('SetScreen', () => SetScreen);
-
+Navigation.registerComponent("App", () => App);
+Navigation.registerComponent("Settings", () => Settings);
+Navigation.registerComponent("MySets", () => MySets);
+Navigation.registerComponent("CreateNewSet", () => CreateNewSet);
+Navigation.registerComponent("Flashcards", () => Flashcards);
+Navigation.registerComponent("Learn", () => Learn);
+Navigation.registerComponent("Writing", () => Writing);
+Navigation.registerComponent("ChoiceAbcd", () => ChoiceAbcd);
+Navigation.registerComponent("Test", () => Test);
+Navigation.registerComponent("Set", () => Set);
 
 Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setRoot({
     root: {
       stack: {
-        id: 'AppStack',
+        id: "AppStack",
         children: [
           {
             component: {
-              name: 'App',
+              name: "App",
               options: {
                 bottomTab: {
-                  text: 'LearningApp',
+                  text: "LearningApp"
                 }
               }
-            },
-          },
+            }
+          }
         ]
       }
     }
-  })
-})
+  });
+});
