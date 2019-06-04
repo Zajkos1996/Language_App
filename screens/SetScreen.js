@@ -12,10 +12,13 @@ export default class SetScreen extends Component {
     };
   }
 
-  goToScreen = screenName => {
+  goToScreen = (screenName, wordsAndDefinitions) => {
     Navigation.push(this.props.componentId, {
       component: {
-        name: screenName
+        name: screenName,
+        passProps: {
+          wordsAndDefinitions
+        }
       }
     });
   };
@@ -69,7 +72,12 @@ export default class SetScreen extends Component {
               imageSrc={require("../img/zdj.png")}
               featured
               title="Fiszki"
-              onPress={() => this.goToScreen("FlashcardsScreen")}
+              onPress={() =>
+                this.goToScreen(
+                  "FlashcardsScreen",
+                  this.props.set.wordsAndDefinitions
+                )
+              }
             />
             <Tile
               width={this.state.width / 2}
@@ -77,7 +85,12 @@ export default class SetScreen extends Component {
               imageSrc={require("../img/zdj.png")}
               featured
               title="Pisanie"
-              onPress={() => this.goToScreen("WritingScreen")}
+              onPress={() =>
+                this.goToScreen(
+                  "WritingScreen",
+                  this.props.set.wordsAndDefinitions
+                )
+              }
             />
             <Tile
               width={this.state.width / 2}
