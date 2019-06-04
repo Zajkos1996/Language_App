@@ -22,7 +22,8 @@ export default class CreateNewSetScreen extends Component {
     rows: [],
     nameOfTheSet: "",
     descriptionOfTheSet: "",
-    wordsAndDefinitions: []
+    wordsAndDefinitions: [],
+    lastCreatedSetId: 0
   };
 
   goToScreen = screenName => {
@@ -47,8 +48,10 @@ export default class CreateNewSetScreen extends Component {
 
   addNewWords = () => {
     let wordsAndDefinitions = {
+      id: this.state.lastCreatedSetId + 1,
       wordValue: "",
-      definitionValue: ""
+      definitionValue: "",
+      answered: false
     };
     let newRow = (
       <View style={styles.wordsContainer}>
@@ -78,7 +81,8 @@ export default class CreateNewSetScreen extends Component {
       </View>
     );
     this.setState({
-      rows: [...this.state.rows, newRow]
+      rows: [...this.state.rows, newRow],
+      lastCreatedSetId: this.state.lastCreatedSetId + 1
     });
   };
 
@@ -120,13 +124,8 @@ export default class CreateNewSetScreen extends Component {
               <Text style={styles.btnAddWordsText}>Dodaj słówka</Text>
             </TouchableOpacity>
           </View>
-
-          <Button
-            onPress={this.saveSet}
-            title="Zapisz zestaw"
-            color="#841584"
-          />
         </ScrollView>
+        <Button onPress={this.saveSet} title="Zapisz zestaw" color="#841584" />
       </View>
     );
   }
