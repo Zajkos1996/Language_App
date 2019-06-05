@@ -105,6 +105,19 @@ export default class SetScreen extends Component {
               title="Test"
               onPress={() => this.goToScreen("TestScreen")}
             />
+            <Tile
+              width={this.state.width / 2}
+              height={125}
+              imageSrc={require("../img/zdj.png")}
+              featured
+              title="Ucz się"
+              onPress={() =>
+                this.goToScreen(
+                  "LearnScreen",
+                  this.props.set.wordsAndDefinitions
+                )
+              }
+            />
           </View>
           {rows}
         </ScrollView>
