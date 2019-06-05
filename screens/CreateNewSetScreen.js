@@ -50,8 +50,7 @@ export default class CreateNewSetScreen extends Component {
     let wordsAndDefinitions = {
       id: this.state.lastCreatedSetId + 1,
       wordValue: "",
-      definitionValue: "",
-      answered: false
+      definitionValue: ""
     };
     let newRow = (
       <View style={styles.wordsContainer}>

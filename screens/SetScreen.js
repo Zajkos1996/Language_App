@@ -64,7 +64,12 @@ export default class SetScreen extends Component {
               imageSrc={require("../img/zdj.png")}
               featured
               title="Wybór Abcd"
-              onPress={() => this.goToScreen("ChoiceAbcdScreen")}
+              onPress={() =>
+                this.goToScreen(
+                  "ChoiceAbcdScreen",
+                  this.props.set.wordsAndDefinitions
+                )
+              }
             />
             <Tile
               width={this.state.width / 2}
