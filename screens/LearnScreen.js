@@ -1,108 +1,112 @@
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,TouchableOpacity, Image} from 'react-native';
-import CardStack, { Card } from 'react-native-card-stack-swiper';
+import React, { Component } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import CardStack, { Card } from "react-native-card-stack-swiper";
 
-type Props = {};
-export default class App extends Component<Props> {
+export default class LearnScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      wordsAndDefinitions: JSON.parse(this.props.wordsAndDefinitions),
+      currentWordAndDefinition: JSON.parse(this.props.wordsAndDefinitions)[0],
+      showHint: true
+    };
+  }
 
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}>Learn</Text>
-                <CardStack
-                    style={styles.content}
+  checkIndexIsEven(n) {
+    return n % 2 == 0;
+  }
 
-                    renderNoMoreCards={() => <Text style={{fontWeight:'700', fontSize:40, color:'gray'}}>No more cards :(</Text>}
-                    ref={swiper => {
-                        this.swiper = swiper
-                    }}
+  render() {
+    let cards = [];
+    this.state.wordsAndDefinitions.forEach((wordsAndDefinition, index) => {
+      cards.push(
+        <Card
+          key={index}
+          style={[
+            styles.card,
+            {
+              backgroundColor: this.checkIndexIsEven(index)
+                ? "#FE474C"
+                : "#FEB12C"
+            }
+          ]}
+        >
+          <Text style={styles.label}>{wordsAndDefinition.wordValue}</Text>
+          <Text style={styles.label}>{wordsAndDefinition.definitionValue}</Text>
+        </Card>
+      );
+    });
 
-                    onSwiped={() => console.log('onSwiped')}
-                    onSwipedLeft={() => console.log('onSwipedLeft')}
-                >
-                    <Card style={[styles.card, styles.card1]}>
-                        <Text style={styles.label}>Computer</Text>
-                        <Text style={styles.label}>Computer</Text>
-                    </Card>
-                    <Card style={[styles.card, styles.card2]} onSwipedLeft={() => alert('onSwipedLeft')}>
-                        <Text style={styles.label}>Computer</Text>
-                        <Text style={styles.label}>Computer</Text>
-                    </Card>
-                    <Card style={[styles.card, styles.card1]}>
-                        <Text style={styles.label}>Computer</Text>
-                        <Text style={styles.label}>Computer</Text>
-                    </Card>
-                    <Card style={[styles.card, styles.card2]}>
-                        <Text style={styles.label}>Computer</Text>
-                        <Text style={styles.label}>Computer</Text>
-                    </Card>
-                    <Card style={[styles.card, styles.card1]}>
-                        <Text style={styles.label}>Computer</Text>
-                        <Text style={styles.label}>Computer</Text>
-                    </Card>
+    return (
+      <View style={styles.container}>
+        {this.state.showHint ? (
+          <View style={styles.header}>
+            <Text>Przesuń kartę w prawo lub lewo</Text>
+          </View>
+        ) : null}
 
-                </CardStack>
+        <CardStack
+          style={styles.content}
+          renderNoMoreCards={() => (
+            <View style={styles.noMoreCards}>
+              <Text style={styles.noMoreCardsText}>Nie ma</Text>
+              <Text style={styles.noMoreCardsText}>więcej kart :(</Text>
             </View>
-        );
-    }
+          )}
+          ref={swiper => {
+            this.swiper = swiper;
+          }}
+          onSwiped={this.onSwiped}
+          disableTopSwipe
+          disableBottomSwipe
+        >
+          {cards}
+        </CardStack>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    content:{
-        flex: 5,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    card:{
-        width: 350,
-        height: 450,
-        backgroundColor: '#FE474C',
-        borderRadius: 5,
-        shadowColor: 'rgba(0,0,0,0.5)',
-        // shadowOffset: {
-        //     width: 0,
-        //     height: 1
-        // },
-        // shadowOpacity:0.5,
-    },
-    card1: {
-        backgroundColor: '#FE474C',
-    },
-    card2: {
-        backgroundColor: '#FEB12C',
-    },
-    label: {
-        lineHeight: 220,
-        textAlign: 'center',
-        fontSize: 35,
-        fontFamily: 'System',
-        color: '#ffffff',
-        backgroundColor: 'transparent',
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF"
+  },
+  header: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  content: {
+    flex: 7,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  card: {
+    width: 320,
+    height: 470,
+    borderRadius: 5,
+    shadowColor: "rgba(0,0,0,0.5)"
+  },
 
-
-    },
-    footer:{
-        flex:1,
-        justifyContent:'center',
-        alignItems:'center'
-    },
-    button:{
-        shadowOpacity:0.5,
-        backgroundColor:'#fff',
-        alignItems:'center',
-        justifyContent:'center',
-        zIndex: 0,
-    },
-
+  label: {
+    lineHeight: 220,
+    textAlign: "center",
+    fontSize: 35,
+    fontFamily: "System",
+    color: "#ffffff",
+    backgroundColor: "transparent"
+  },
+  noMoreCards: {
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  noMoreCardsText: {
+    fontWeight: "700",
+    fontSize: 36,
+    color: "gray"
+  }
 });
