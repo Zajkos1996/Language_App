@@ -25,7 +25,9 @@ export default class TestScreen extends Component {
       component: {
         name: "ResultFromTestScreen",
         passProps: {
-          scoreFromTest: this.state.scoreFromTest
+          scoreFromTest: this.state.scoreFromTest,
+          wordsAndDefinitions: this.state.wordsAndDefinitions,
+          allSetsFromDb: this.state.sets
         }
       }
     });

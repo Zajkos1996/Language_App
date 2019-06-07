@@ -2,22 +2,46 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native";
 import { Tile } from "react-native-elements";
 import { Navigation } from "react-native-navigation";
+import SQLite from "react-native-sqlite-storage";
+
+var db = SQLite.openDatabase({
+  name: "md.db",
+  createFromLocation: 1
+});
 
 export default class SetScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       width: Dimensions.get("window").width,
-      set: this.props.set
+      set: this.props.set,
+      allSetsFromDb: []
     };
   }
 
-  goToScreen = (screenName, wordsAndDefinitions) => {
+  downloadDataFromDatabase = async () => {
+    await db.transaction(tx => {
+      tx.executeSql("SELECT * FROM sets;", [], (tx, results) => {
+        let sets = [];
+        for (let i = 0; i < results.rows.length; i++) {
+          sets[i] = results.rows.item(i);
+        }
+        this.setState({ allSetsFromDb: sets });
+      });
+    });
+  };
+
+  async componentDidMount() {
+    await this.downloadDataFromDatabase();
+  }
+
+  goToScreen = (screenName, wordsAndDefinitions, allSetsFromDb = "") => {
     Navigation.push(this.props.componentId, {
       component: {
         name: screenName,
         passProps: {
-          wordsAndDefinitions
+          wordsAndDefinitions,
+          allSetsFromDb
         }
       }
     });
@@ -103,7 +127,13 @@ export default class SetScreen extends Component {
               imageSrc={require("../img/zdj.png")}
               featured
               title="Test"
-              onPress={() => this.goToScreen("TestScreen")}
+              onPress={() =>
+                this.goToScreen(
+                  "TestScreen",
+                  this.props.set.wordsAndDefinitions,
+                  this.state.allSetsFromDb
+                )
+              }
             />
             <Tile
               width={this.state.width / 2}
