@@ -53,8 +53,8 @@ export default class ChoiceAbcdScreen extends Component {
     let randomPossibleAnswers = [];
     for (let i = 0; i < 3; i++) {
       let max = possibleAnswers.length;
-      let min = 1;
-      let randomNumber = Math.floor(Math.random() * (max - min) + min);
+      let min = 0;
+      let randomNumber = Math.floor(Math.random() * (max - min));
       randomPossibleAnswers.push(possibleAnswers[randomNumber]);
       possibleAnswers.splice(randomNumber, 1);
     }
