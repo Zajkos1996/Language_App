@@ -27,6 +27,20 @@ Navigation.registerComponent(
 Navigation.registerComponent("SetScreen", () => SetScreen);
 
 Navigation.events().registerAppLaunchedListener(() => {
+  Navigation.setDefaultOptions({
+    layout: {
+      orientation: ["portrait"]
+    },
+    topBar: {
+      elevation: 0,
+      visible: false,
+      drawBehind: true,
+      animate: true,
+      background: {
+        color: "transparent"
+      }
+    }
+  });
   Navigation.setRoot({
     root: {
       stack: {
