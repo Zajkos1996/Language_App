@@ -38,6 +38,7 @@ export default class CreateNewSetScreen extends Component {
     const query = `INSERT INTO sets VALUES ('${this.state.nameOfTheSet}', '${
       this.state.descriptionOfTheSet
     }', '${JSON.stringify(this.state.wordsAndDefinitions)}') `;
+    console.log(JSON.stringify(this.state.wordsAndDefinitions));
     return db.executeSql(query);
   };
 

@@ -45,13 +45,13 @@ export default class App extends Component {
               title="UTWÓRZ NOWY ZESTAW"
               onPress={() => this.goToScreen("CreateNewSetScreen")}
             />
-            <Tile
+            {/* <Tile
               width={width / 2}
-              imageSrc={require("./img/zdj.png")}
+              // imageSrc={require("./img/zdj.png")}
               featured
               title="TEST"
               onPress={() => this.goToScreen("TestScreen")}
-            />
+            /> */}
             <Tile
               width={width / 2}
               imageSrc={require("./img/zdj.png")}
