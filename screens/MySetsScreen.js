@@ -4,10 +4,12 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  StatusBar
 } from "react-native";
 import { Navigation } from "react-native-navigation";
 import SQLite from "react-native-sqlite-storage";
+import { Header } from "react-native-elements";
 
 var db = SQLite.openDatabase({
   name: "md.db",
@@ -53,12 +55,18 @@ export default class MySetsScreen extends Component {
       rows.push(
         <TouchableOpacity
           key={index}
-          style={styles.test}
+          style={styles.setContainer}
           onPress={() => this.goToScreen("SetScreen", set)}
         >
-          <Text style={styles.welcome}>{set.name}</Text>
-          <Text>{JSON.parse(set.wordsAndDefinitions).length} pojęć</Text>
-          <Text>{set.desc}</Text>
+          <View style={styles.setContainerTitle}>
+            <Text style={styles.setContainerTitleTxt}>{set.name}</Text>
+          </View>
+          <View style={styles.setContainerDesc}>
+            <Text style={styles.setContainerTxt}>
+              {JSON.parse(set.wordsAndDefinitions).length} pojęć
+            </Text>
+            <Text style={styles.setContainerTxt}>{set.desc}</Text>
+          </View>
         </TouchableOpacity>
       );
     });
@@ -67,38 +75,63 @@ export default class MySetsScreen extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <ScrollView>
-          <Text style={styles.welcome}>Twoje zestawy </Text>
+      <View style={{ flex: 1 }}>
+        <Header
+          centerComponent={{
+            text: "Twoje zestawy",
+            style: styles.headerTitleText
+          }}
+          containerStyle={{
+            backgroundColor: "#4E046D",
+            marginTop: (StatusBar.currentHeight || 0) * -1
+          }}
+        />
+        <View style={styles.container}>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {/* <Text style={styles.welcome}>Twoje zestawy </Text> */}
 
-          {this.renderSets()}
-        </ScrollView>
+            {this.renderSets()}
+          </ScrollView>
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  headerTitleText: {
+    fontWeight: "700",
+    fontSize: 20,
+    color: "#fff"
+  },
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f0f0f0"
+    backgroundColor: "#5388d0"
   },
-  welcome: {
-    fontSize: 30,
-    textAlign: "center",
-    margin: 10,
-    color: "black",
-    fontWeight: "bold"
+  scrollContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10
   },
-  test: {
-    borderWidth: 1,
-    borderColor: "black",
-    borderStyle: "solid",
-    backgroundColor: "white",
-    width: "90%",
-    padding: 5,
-    alignSelf: "center"
+  setContainer: {
+    borderRadius: 5,
+    marginVertical: 10,
+    padding: 10,
+    backgroundColor: "#fff"
+  },
+  setContainerTitle: {
+    borderBottomWidth: 1,
+    borderBottomColor: "black",
+    paddingBottom: 5
+  },
+  setContainerDesc: {
+    paddingTop: 5
+  },
+  setContainerTitleTxt: {
+    color: "#000",
+    fontWeight: "700",
+    fontSize: 20
+  },
+  setContainerTxt: {
+    color: "#000"
   }
 });
