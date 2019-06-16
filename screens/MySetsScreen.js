@@ -38,6 +38,7 @@ export default class MySetsScreen extends Component {
         var sets = [];
         for (let i = 0; i < results.rows.length; i++) {
           sets[i] = results.rows.item(i);
+          console.log(results.rows.item(i));
         }
         this.setState({ sets: sets });
       });
@@ -73,6 +74,14 @@ export default class MySetsScreen extends Component {
     return rows;
   };
 
+  onAddIconPressed = () => {
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: "CreateNewSetScreen"
+      }
+    });
+  };
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -80,6 +89,11 @@ export default class MySetsScreen extends Component {
           centerComponent={{
             text: "Twoje zestawy",
             style: styles.headerTitleText
+          }}
+          rightComponent={{
+            icon: "add",
+            color: "#fff",
+            onPress: () => this.onAddIconPressed()
           }}
           containerStyle={{
             backgroundColor: "#4E046D",

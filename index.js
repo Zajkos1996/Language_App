@@ -10,6 +10,7 @@ import ChoiceAbcdScreen from "./screens/ChoiceAbcdScreen";
 import TestScreen from "./screens/TestScreen";
 import ResultFromTestScreen from "./screens/ResultFromTestScreen";
 import SetScreen from "./screens/SetScreen";
+import EditSetScreen from "./screens/EditSetScreen";
 
 Navigation.registerComponent("App", () => App);
 Navigation.registerComponent("SettingsScreen", () => SettingsScreen);
@@ -25,6 +26,7 @@ Navigation.registerComponent(
   () => ResultFromTestScreen
 );
 Navigation.registerComponent("SetScreen", () => SetScreen);
+Navigation.registerComponent("EditSetScreen", () => EditSetScreen);
 
 Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setDefaultOptions({
