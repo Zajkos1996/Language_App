@@ -4,7 +4,8 @@ import {
   View,
   TextInput,
   ScrollView,
-  StatusBar
+  StatusBar,
+  Alert
 } from "react-native";
 import { Navigation } from "react-native-navigation";
 import SQLite from "react-native-sqlite-storage";
@@ -21,7 +22,7 @@ export default class CreateNewSetScreen extends Component {
     nameOfTheSet: "",
     descriptionOfTheSet: "",
     wordsAndDefinitions: [],
-    lastCreatedSetId: 0
+    nextFreeWordsId: 0
   };
 
   goToScreen = screenName => {
@@ -42,62 +43,73 @@ export default class CreateNewSetScreen extends Component {
   };
 
   saveSet = () => {
-    this.addSetToDatabase();
-    this.goToScreen("App");
+    if (this.state.nameOfTheSet === "") {
+      Alert.alert("Zapisz zestaw", "Zestaw musi mieć nazwę", [{ text: "Ok" }], {
+        cancelable: false
+      });
+    } else if (this.state.descriptionOfTheSet === "") {
+      Alert.alert("Zapisz zestaw", "Zestaw musi mieć opis", [{ text: "Ok" }], {
+        cancelable: false
+      });
+    } else if (this.state.wordsAndDefinitions.length < 5) {
+      Alert.alert(
+        "Zapisz zestaw",
+        "Zestaw musi zawierać minimum 5 słówek",
+        [{ text: "Ok" }],
+        { cancelable: false }
+      );
+    } else {
+      this.addSetToDatabase();
+      this.goToScreen("App");
+    }
   };
 
-  addNewWords = () => {
-    let wordsAndDefinitions = {
-      id: this.state.lastCreatedSetId + 1,
+  addNewWords = async () => {
+    let currentId = this.state.nextFreeWordsId;
+
+    let wordAndDefinition = {
       wordValue: "",
       definitionValue: ""
     };
+
+    await this.setState({
+      wordsAndDefinitions: [
+        ...this.state.wordsAndDefinitions,
+        wordAndDefinition
+      ]
+    });
+
     let newRow = (
       <View style={styles.wordsContainer}>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginVertical: 10
-          }}
-        >
-          <Icon name="clear" color="#841584" size={32} />
-          <Icon
-            name="check-circle"
-            type="font-awesome"
-            color="#841584"
-            size={32}
-            onPress={() => this.saveWords(wordsAndDefinitions)}
-          />
-        </View>
         <TextInput
           style={styles.wordsContainerInput}
           placeholder="pojęcie"
-          onChangeText={word => (wordsAndDefinitions.wordValue = word)}
+          onChangeText={word => {
+            let copy = this.state.wordsAndDefinitions;
+            copy[currentId].wordValue = word;
+            this.setState({
+              wordsAndDefinitions: copy
+            });
+          }}
         />
 
         <TextInput
           style={styles.wordsContainerInput}
           placeholder="definicja"
           onChangeText={definition => {
-            wordsAndDefinitions.definitionValue = definition;
+            let copy = this.state.wordsAndDefinitions;
+            copy[currentId].definitionValue = definition;
+            this.setState({
+              wordsAndDefinitions: copy
+            });
           }}
         />
       </View>
     );
+
     this.setState({
       rows: [...this.state.rows, newRow],
-      lastCreatedSetId: this.state.lastCreatedSetId + 1
-    });
-  };
-
-  saveWords = wordsAndDefinitions => {
-    this.setState({
-      wordsAndDefinitions: [
-        ...this.state.wordsAndDefinitions,
-        wordsAndDefinitions
-      ]
+      nextFreeWordsId: this.state.nextFreeWordsId + 1
     });
   };
 
@@ -138,7 +150,13 @@ export default class CreateNewSetScreen extends Component {
 
             {rows}
 
-            <View style={{ display: "flex", alignItems: "center" }}>
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: 10
+              }}
+            >
               <Button
                 title="Dodaj słówka"
                 buttonStyle={{ backgroundColor: "#4E046D" }}
