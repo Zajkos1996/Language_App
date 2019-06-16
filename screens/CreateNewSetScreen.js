@@ -1,16 +1,14 @@
 import React, { Component } from "react";
 import {
-  TouchableOpacity,
-  Button,
   StyleSheet,
-  Text,
   View,
   TextInput,
-  ScrollView
+  ScrollView,
+  StatusBar
 } from "react-native";
 import { Navigation } from "react-native-navigation";
 import SQLite from "react-native-sqlite-storage";
-import { Icon } from "react-native-elements";
+import { Icon, Header, Button } from "react-native-elements";
 
 var db = SQLite.openDatabase({
   name: "md.db",
@@ -35,10 +33,11 @@ export default class CreateNewSetScreen extends Component {
   };
 
   addSetToDatabase = () => {
-    const query = `INSERT INTO sets VALUES ('${this.state.nameOfTheSet}', '${
-      this.state.descriptionOfTheSet
-    }', '${JSON.stringify(this.state.wordsAndDefinitions)}') `;
-    console.log(JSON.stringify(this.state.wordsAndDefinitions));
+    const query = `INSERT INTO sets (name, desc, wordsAndDefinitions) VALUES ('${
+      this.state.nameOfTheSet
+    }', '${this.state.descriptionOfTheSet}', '${JSON.stringify(
+      this.state.wordsAndDefinitions
+    )}') `;
     return db.executeSql(query);
   };
 
@@ -56,23 +55,30 @@ export default class CreateNewSetScreen extends Component {
     let newRow = (
       <View style={styles.wordsContainer}>
         <View
-          style={{ display: "flex", alignItems: "flex-end", marginRight: 10 }}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginVertical: 10
+          }}
         >
+          <Icon name="clear" color="#841584" size={32} />
           <Icon
             name="check-circle"
             type="font-awesome"
             color="#841584"
+            size={32}
             onPress={() => this.saveWords(wordsAndDefinitions)}
           />
         </View>
         <TextInput
-          style={styles.textInput}
+          style={styles.wordsContainerInput}
           placeholder="pojęcie"
           onChangeText={word => (wordsAndDefinitions.wordValue = word)}
         />
 
         <TextInput
-          style={styles.textInput}
+          style={styles.wordsContainerInput}
           placeholder="definicja"
           onChangeText={definition => {
             wordsAndDefinitions.definitionValue = definition;
@@ -98,70 +104,85 @@ export default class CreateNewSetScreen extends Component {
   render() {
     const { rows } = this.state;
     return (
-      <View style={styles.container}>
-        <ScrollView style={styles.scrollContainer}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Nazwa zestawu"
-            onChangeText={nameOfTheSet => this.setState({ nameOfTheSet })}
+      <View style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Header
+            centerComponent={{
+              text: "Stwórz zestaw",
+              style: styles.headerTitleText
+            }}
+            rightComponent={{
+              icon: "check",
+              color: "#fff",
+              onPress: () => this.saveSet()
+            }}
+            containerStyle={{
+              backgroundColor: "#4E046D",
+              marginTop: (StatusBar.currentHeight || 0) * -1
+            }}
           />
+          <ScrollView style={styles.scrollContainer}>
+            <TextInput
+              style={styles.scrollContainerInput}
+              placeholder="Nazwa zestawu"
+              onChangeText={nameOfTheSet => this.setState({ nameOfTheSet })}
+            />
 
-          <TextInput
-            style={styles.textInput}
-            placeholder="Opis zestawu"
-            onChangeText={descriptionOfTheSet =>
-              this.setState({ descriptionOfTheSet })
-            }
-          />
+            <TextInput
+              style={styles.scrollContainerInput}
+              placeholder="Opis zestawu"
+              onChangeText={descriptionOfTheSet =>
+                this.setState({ descriptionOfTheSet })
+              }
+            />
 
-          {rows}
+            {rows}
 
-          <View style={{ display: "flex", alignItems: "center" }}>
-            <TouchableOpacity
-              style={styles.btnAddWords}
-              onPress={this.addNewWords}
-            >
-              <Text style={styles.btnAddWordsText}>Dodaj słówka</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-        <Button onPress={this.saveSet} title="Zapisz zestaw" color="#841584" />
+            <View style={{ display: "flex", alignItems: "center" }}>
+              <Button
+                title="Dodaj słówka"
+                buttonStyle={{ backgroundColor: "#4E046D" }}
+                onPress={this.addNewWords}
+              />
+            </View>
+          </ScrollView>
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  headerTitleText: {
+    fontWeight: "700",
+    fontSize: 20,
+    color: "#fff"
+  },
   container: {
     flex: 1,
-    backgroundColor: "#f0f0f0"
+    backgroundColor: "#5388d0"
   },
-  textInput: {
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "#841584",
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 5,
-    marginBottom: 5
+  scrollContainerInput: {
+    marginHorizontal: 10,
+    marginVertical: 5,
+    borderRadius: 5,
+    fontSize: 18,
+    backgroundColor: "#fff"
   },
   wordsContainer: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "black",
-    borderStyle: "solid",
+    paddingBottom: 10,
+    paddingHorizontal: 10,
     margin: 10,
-    backgroundColor: "silver"
+    backgroundColor: "#fff",
+    borderRadius: 5
   },
-  btnAddWords: {
-    margin: 10,
-    borderWidth: 1,
-    width: "40%",
+  wordsContainerInput: {
+    marginHorizontal: 10,
+    marginVertical: 5,
     borderRadius: 5,
-    padding: 5
-  },
-  btnAddWordsText: {
-    fontSize: 14,
-    textAlign: "center"
+    fontSize: 18,
+    borderWidth: 1,
+    borderColor: "#5388d0",
+    borderStyle: "solid"
   }
 });
