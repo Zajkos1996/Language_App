@@ -68,6 +68,7 @@ export default class CreateNewSetScreen extends Component {
     let currentId = this.state.nextFreeWordsId;
 
     let wordAndDefinition = {
+      id: currentId + 1,
       wordValue: "",
       definitionValue: ""
     };

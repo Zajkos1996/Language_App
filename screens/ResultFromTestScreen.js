@@ -6,10 +6,6 @@ import { Navigation } from "react-native-navigation";
 export default class ResultFromTestScreen extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      scoreFromTest: this.props.scoreFromTest
-    };
   }
 
   goToScreen = (screenName, wordsAndDefinitions = "", allSetsFromDb = "") => {
@@ -29,7 +25,9 @@ export default class ResultFromTestScreen extends Component {
       <View style={styles.container}>
         <View style={styles.containerTop}>
           <Text style={styles.title}>Twój wynik to</Text>
-          <Text style={styles.points}>{this.state.scoreFromTest} / 10 </Text>
+          <Text style={styles.points}>
+            {this.props.score} / {this.props.availablePoints}{" "}
+          </Text>
           <Text style={styles.title}>punktów</Text>
         </View>
         <View style={styles.containerBottom}>
@@ -40,7 +38,7 @@ export default class ResultFromTestScreen extends Component {
             type="outline"
             onPress={() =>
               this.goToScreen(
-                "TestScreen",
+                this.props.lastScreen,
                 JSON.stringify(this.props.wordsAndDefinitions),
                 this.props.allSetsFromDb
               )

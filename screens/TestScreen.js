@@ -15,17 +15,19 @@ export default class TestScreen extends Component {
       questionsWriting: [],
       rowsWriting: [],
       ansFromWriting: ["", "", "", "", ""],
-      scoreFromTest: 0,
+      score: 0,
       ansButtonsDisabled: [false, false, false, false, false]
     };
   }
 
-  goToResultFromTestScreen = () => {
+  goToResultScreen = () => {
     Navigation.push(this.props.componentId, {
       component: {
         name: "ResultFromTestScreen",
         passProps: {
-          scoreFromTest: this.state.scoreFromTest,
+          score: this.state.score,
+          availablePoints: 10,
+          lastScreen: "TestScreen",
           wordsAndDefinitions: this.state.wordsAndDefinitions,
           allSetsFromDb: this.state.sets
         }
@@ -167,7 +169,7 @@ export default class TestScreen extends Component {
 
   countScoreFromAbcdChoice = async (correctAnswer, userAnswer, questionId) => {
     if (userAnswer === correctAnswer) {
-      this.setState({ scoreFromTest: this.state.scoreFromTest + 1 });
+      this.setState({ score: this.state.score + 1 });
     }
 
     // Wyłącz przyciski
@@ -189,13 +191,13 @@ export default class TestScreen extends Component {
       }
     });
     await this.setState({
-      scoreFromTest: this.state.scoreFromTest + points
+      score: this.state.score + points
     });
   };
 
   onFinishTest = async () => {
     await this.countScoreFromWriting();
-    this.goToResultFromTestScreen();
+    this.goToResultScreen();
   };
 
   render() {

@@ -4,9 +4,11 @@ import {
   Text,
   TextInput,
   View,
-  TouchableOpacity
+  StatusBar,
+  Alert
 } from "react-native";
 import { Navigation } from "react-native-navigation";
+import { Button, Header } from "react-native-elements";
 
 export default class WritingScreen extends Component {
   constructor(props) {
@@ -14,46 +16,63 @@ export default class WritingScreen extends Component {
     this.state = {
       wordsAndDefinitions: JSON.parse(this.props.wordsAndDefinitions),
       userAnswer: "",
-      currentWordAndDefinition: JSON.parse(this.props.wordsAndDefinitions)[0]
+      currentWordAndDefinition: JSON.parse(this.props.wordsAndDefinitions)[0],
+      isCorrectAnswer: false,
+      isAnswered: false,
+      messageToAnswer: "",
+      score: 0
     };
   }
 
-  goToScreen = screenName => {
+  goToResultScreen = () => {
     Navigation.push(this.props.componentId, {
       component: {
-        name: screenName
+        name: "ResultFromTestScreen",
+        passProps: {
+          score: this.state.score,
+          availablePoints: this.state.wordsAndDefinitions.length,
+          lastScreen: "WritingScreen",
+          wordsAndDefinitions: this.state.wordsAndDefinitions,
+          allSetsFromDb: this.state.sets
+        }
       }
     });
   };
 
-  checkAnswer = () => {
-    console.log(this.userInput);
-
+  checkAnswer = async () => {
     if (
       this.state.currentWordAndDefinition.definitionValue
         .trim()
         .toLowerCase() === this.state.userAnswer.trim().toLowerCase()
     ) {
-      // correct answer
-      console.log("correct");
+      await this.setState({
+        isCorrectAnswer: true,
+        messageToAnswer: "Dobrze!",
+        score: this.state.score + 1
+      });
     } else {
-      // incorrect answer
-      console.log("incorrect");
+      await this.setState({ isCorrectAnswer: false, messageToAnswer: "Źle!" });
     }
+    await this.setState({ isAnswered: true });
 
-    if (
-      this.state.currentWordAndDefinition.id >=
-      this.state.wordsAndDefinitions.length
-    ) {
-      // do ekranu wyniku
-      this.goToScreen("MySetsScreen");
-    }
+    setTimeout(() => {
+      if (
+        this.state.currentWordAndDefinition.id >=
+        this.state.wordsAndDefinitions.length
+      ) {
+        this.goToResultScreen("ResultFromTestScreen");
+      }
 
-    // nastepny pytanie
-    this.changeNext();
+      this.changeNext();
 
-    // czyszczenie inputa
-    this.userInput.clear();
+      this.userInput.clear();
+
+      this.setState({
+        isCorrectAnswer: false,
+        isAnswered: false,
+        messageToAnswer: ""
+      });
+    }, 1100);
   };
 
   changeNext = () => {
@@ -66,69 +85,139 @@ export default class WritingScreen extends Component {
     }
   };
 
+  onExit = () => {
+    Alert.alert(
+      "Pisanie",
+      "Czy na pewno chcesz przerwać naukę?",
+      [
+        {
+          text: "Nie"
+        },
+        {
+          text: "Tak",
+          onPress: () => {
+            Navigation.popToRoot(this.props.componentId);
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  getStyleForAnswerInput = (isAnswered, isCorrectAnswer) => {
+    if (isAnswered && isCorrectAnswer) {
+      return {
+        fontSize: 24,
+        textAlign: "center",
+        marginVertical: 20,
+        textAlign: "center",
+        width: "90%",
+        borderRadius: 5,
+        backgroundColor: "#2ECC71",
+        borderStyle: "solid",
+        borderWidth: 1,
+        borderColor: "#2ECC71"
+      };
+    } else if (isAnswered && !isCorrectAnswer) {
+      return {
+        fontSize: 24,
+        textAlign: "center",
+        marginVertical: 20,
+        textAlign: "center",
+        width: "90%",
+        borderRadius: 5,
+        backgroundColor: "#B71C0C",
+        borderStyle: "solid",
+        borderWidth: 1,
+        borderColor: "#B71C0C"
+      };
+    } else {
+      return {
+        fontSize: 24,
+        textAlign: "center",
+        marginVertical: 20,
+        textAlign: "center",
+        width: "90%",
+        borderRadius: 5,
+        backgroundColor: "#fff"
+      };
+    }
+  };
+
   render() {
     return (
-      <View style={styles.container}>
-        <View>
-          <Text style={styles.txtWord}>
-            {this.state.currentWordAndDefinition.wordValue}
-          </Text>
-        </View>
-
-        <TextInput
-          style={styles.txtInput}
-          onChangeText={text => this.setState({ userAnswer: text })}
-          ref={input => {
-            this.userInput = input;
+      <View style={{ flex: 1 }}>
+        <Header
+          centerComponent={{
+            text: "Pisanie",
+            style: styles.headerTitleText
+          }}
+          rightComponent={{
+            icon: "clear",
+            color: "#fff",
+            onPress: () => this.onExit()
+          }}
+          containerStyle={{
+            backgroundColor: "#4E046D",
+            marginTop: (StatusBar.currentHeight || 0) * -1
           }}
         />
+        <View style={styles.container}>
+          <View>
+            <Text style={styles.wordTxt}>
+              {this.state.currentWordAndDefinition.wordValue}
+            </Text>
+          </View>
 
-        <TouchableOpacity onPress={this.checkAnswer} style={styles.btn}>
-          <Text style={styles.textBtn}>Dalej</Text>
-        </TouchableOpacity>
+          <TextInput
+            style={this.getStyleForAnswerInput(
+              this.state.isAnswered,
+              this.state.isCorrectAnswer
+            )}
+            onChangeText={text => this.setState({ userAnswer: text })}
+            ref={input => {
+              this.userInput = input;
+            }}
+          />
+
+          <Button
+            title="Dalej"
+            disabled={this.state.isAnswered}
+            onPress={this.checkAnswer}
+            buttonStyle={{ backgroundColor: "#4E046D", paddingHorizontal: 30 }}
+          />
+
+          <Text style={styles.messageToAnswer}>
+            {this.state.messageToAnswer}
+          </Text>
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  headerTitleText: {
+    fontWeight: "700",
+    fontSize: 20,
+    color: "#fff"
+  },
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F5FCFF"
+    backgroundColor: "#5388d0"
   },
-  txtWord: {
+  messageToAnswer: {
     fontSize: 40,
     textAlign: "center",
-    marginTop: 10,
-    marginBottom: 20
+    marginVertical: 15,
+    color: "#fff"
   },
-  txtInput: {
-    fontSize: 30,
+  wordTxt: {
+    fontSize: 48,
     textAlign: "center",
-    marginTop: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "black",
-    borderStyle: "solid",
-    textAlign: "center",
-    width: "90%",
-    borderRadius: 5
-  },
-  btn: {
-    width: "50%",
-    padding: 10,
-    borderColor: "deepskyblue",
-    borderStyle: "solid",
-    borderWidth: 1,
-    backgroundColor: "deepskyblue",
-    borderRadius: 5,
-    marginTop: 10,
-    marginBottom: 10
-  },
-  textBtn: {
-    fontSize: 20,
-    textAlign: "center"
+    marginVertical: 15,
+    color: "#fff"
   }
 });
