@@ -1,6 +1,14 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, ScrollView, TextInput } from "react-native";
-import { Button } from "react-native-elements";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TextInput,
+  StatusBar,
+  Alert
+} from "react-native";
+import { Button, Header } from "react-native-elements";
 import { Navigation } from "react-native-navigation";
 
 export default class TestScreen extends Component {
@@ -15,8 +23,7 @@ export default class TestScreen extends Component {
       questionsWriting: [],
       rowsWriting: [],
       ansFromWriting: ["", "", "", "", ""],
-      score: 0,
-      ansButtonsDisabled: [false, false, false, false, false]
+      score: 0
     };
   }
 
@@ -91,12 +98,14 @@ export default class TestScreen extends Component {
     });
 
     let randomPossibleAnswers = [];
-    for (let i = 0; i < 3; i++) {
+    while (randomPossibleAnswers.length < 3) {
       let max = possibleAnswers.length;
       let min = 0;
       let randomNumber = Math.floor(Math.random() * (max - min));
-      randomPossibleAnswers.push(possibleAnswers[randomNumber]);
-      possibleAnswers.splice(randomNumber, 1);
+      if (!randomPossibleAnswers.includes(possibleAnswers[randomNumber])) {
+        randomPossibleAnswers.push(possibleAnswers[randomNumber]);
+        possibleAnswers.splice(randomNumber, 1);
+      }
     }
 
     randomPossibleAnswers.push(correctAnswer);
@@ -131,7 +140,6 @@ export default class TestScreen extends Component {
               questionId
             )
           }
-          disabled={this.state.ansButtonsDisabled[questionId]}
         />
       );
     });
@@ -171,13 +179,6 @@ export default class TestScreen extends Component {
     if (userAnswer === correctAnswer) {
       this.setState({ score: this.state.score + 1 });
     }
-
-    // Wyłącz przyciski
-    let copyOfState = this.state.ansButtonsDisabled;
-    copyOfState[questionId] = true;
-    await this.setState({
-      ansButtonsDisabled: copyOfState
-    });
   };
 
   countScoreFromWriting = async () => {
@@ -200,29 +201,72 @@ export default class TestScreen extends Component {
     this.goToResultScreen();
   };
 
+  onExit = () => {
+    Alert.alert(
+      "Pisanie",
+      "Czy na pewno chcesz przerwać test?",
+      [
+        {
+          text: "Nie"
+        },
+        {
+          text: "Tak",
+          onPress: () => {
+            Navigation.popToRoot(this.props.componentId);
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   render() {
     return (
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.questionHeader}>
-            <Text style={styles.txtTaskTitle}>
-              1. Wybierz poprawną odpowiedź
-            </Text>
-          </View>
+      <ScrollView style={{ flex: 1 }}>
+        <ScrollView style={styles.container}>
+          <Header
+            centerComponent={{
+              text: "Test",
+              style: styles.headerTitleText
+            }}
+            rightComponent={{
+              icon: "clear",
+              color: "#fff",
+              onPress: () => this.onExit()
+            }}
+            containerStyle={{
+              backgroundColor: "#4E046D",
+              marginTop: (StatusBar.currentHeight || 0) * -1
+            }}
+          />
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.questionHeader}>
+              <Text style={styles.txtTaskTitle}>
+                1. Wybierz poprawną odpowiedź
+              </Text>
+            </View>
 
-          {this.state.rowsAbcd}
-          <View style={styles.questionHeader}>
-            <Text style={styles.txtTaskTitle}>2. Wpisz poprawną odpowiedź</Text>
-          </View>
-          {this.state.rowsWriting}
-          <Button title="Zakończ test" onPress={this.onFinishTest} />
+            {this.state.rowsAbcd}
+            <View style={styles.questionHeader}>
+              <Text style={styles.txtTaskTitle}>
+                2. Wpisz poprawną odpowiedź
+              </Text>
+            </View>
+            {this.state.rowsWriting}
+            <Button title="Zakończ test" onPress={this.onFinishTest} />
+          </ScrollView>
         </ScrollView>
-      </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  headerTitleText: {
+    fontWeight: "700",
+    fontSize: 20,
+    color: "#fff"
+  },
   container: {
     flex: 1,
     backgroundColor: "#F5FCFF"
