@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, Text, View, StatusBar, Alert } from "react-native";
 import CardStack, { Card } from "react-native-card-stack-swiper";
+import { Header } from "react-native-elements";
+import { Navigation } from "react-native-navigation";
 
 export default class LearnScreen extends Component {
   constructor(props) {
@@ -12,9 +14,40 @@ export default class LearnScreen extends Component {
     };
   }
 
+  goToScreen = (screenName, wordsAndDefinitions = "", allSetsFromDb = "") => {
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: screenName,
+        passProps: {
+          wordsAndDefinitions,
+          allSetsFromDb
+        }
+      }
+    });
+  };
+
   checkIndexIsEven(n) {
     return n % 2 == 0;
   }
+
+  onExit = () => {
+    Alert.alert(
+      "Pisanie",
+      "Czy na pewno chcesz przerwać naukę?",
+      [
+        {
+          text: "Nie"
+        },
+        {
+          text: "Tak",
+          onPress: () => {
+            Navigation.popToRoot(this.props.componentId);
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
 
   render() {
     let cards = [];
@@ -38,41 +71,63 @@ export default class LearnScreen extends Component {
     });
 
     return (
-      <View style={styles.container}>
-        {this.state.showHint ? (
-          <View style={styles.header}>
-            <Text>Przesuń kartę w prawo lub lewo</Text>
-          </View>
-        ) : null}
-
-        <CardStack
-          style={styles.content}
-          renderNoMoreCards={() => (
-            <View style={styles.noMoreCards}>
-              <Text style={styles.noMoreCardsText}>Nie ma</Text>
-              <Text style={styles.noMoreCardsText}>więcej kart :(</Text>
-            </View>
-          )}
-          ref={swiper => {
-            this.swiper = swiper;
+      <View style={{ flex: 1 }}>
+        <Header
+          centerComponent={{
+            text: "Nauka",
+            style: styles.headerTitleText
           }}
-          onSwiped={this.onSwiped}
-          disableTopSwipe
-          disableBottomSwipe
-        >
-          {cards}
-        </CardStack>
+          rightComponent={{
+            icon: "clear",
+            color: "#fff",
+            onPress: () => this.onExit()
+          }}
+          containerStyle={{
+            backgroundColor: "#4E046D",
+            marginTop: (StatusBar.currentHeight || 0) * -1
+          }}
+        />
+        <View style={styles.container}>
+          {this.state.showHint ? (
+            <View style={styles.header}>
+              <Text>Przesuń kartę w prawo lub lewo</Text>
+            </View>
+          ) : null}
+
+          <CardStack
+            style={styles.content}
+            renderNoMoreCards={() => (
+              <View style={styles.noMoreCards}>
+                <Text style={styles.noMoreCardsText}>Nie ma</Text>
+                <Text style={styles.noMoreCardsText}>więcej kart :(</Text>
+              </View>
+            )}
+            ref={swiper => {
+              this.swiper = swiper;
+            }}
+            onSwiped={this.onSwiped}
+            disableTopSwipe
+            disableBottomSwipe
+          >
+            {cards}
+          </CardStack>
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  headerTitleText: {
+    fontWeight: "700",
+    fontSize: 20,
+    color: "#fff"
+  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5FCFF"
+    backgroundColor: "#5388d0"
   },
   header: {
     flex: 1,
@@ -81,6 +136,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 7,
+    backgroundColor: "#5388d0",
     alignItems: "center",
     justifyContent: "center"
   },
@@ -90,7 +146,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     shadowColor: "rgba(0,0,0,0.5)"
   },
-
   label: {
     lineHeight: 220,
     textAlign: "center",
@@ -107,6 +162,12 @@ const styles = StyleSheet.create({
   noMoreCardsText: {
     fontWeight: "700",
     fontSize: 36,
-    color: "gray"
+    color: "#fff"
+  },
+  btnTitle: {
+    color: "#fff"
+  },
+  btn: {
+    borderColor: "#fff"
   }
 });
