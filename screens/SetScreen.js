@@ -142,11 +142,18 @@ export default class SetScreen extends Component {
               }}
             >
               <Tile
-                width={this.state.width / 2}
-                height={125}
-                imageSrc={require("../img/zdj.png")}
+                width={this.state.width / 3}
+                height={100}
+                overlayContainerStyle={styles.tileContainer}
+                icon={{
+                  name: "grid",
+                  type: "feather",
+                  color: "#4E046D",
+                  size: 38
+                }}
                 featured
-                title="Wybór Abcd"
+                title="Abcd"
+                titleStyle={styles.tileContainerText}
                 onPress={() =>
                   this.goToScreen(
                     "ChoiceAbcdScreen",
@@ -156,11 +163,18 @@ export default class SetScreen extends Component {
                 }
               />
               <Tile
-                width={this.state.width / 2}
-                height={125}
-                imageSrc={require("../img/zdj.png")}
+                width={this.state.width / 3}
+                height={100}
+                overlayContainerStyle={styles.tileContainer}
+                icon={{
+                  name: "switcher",
+                  type: "antdesign",
+                  color: "#4E046D",
+                  size: 38
+                }}
                 featured
                 title="Fiszki"
+                titleStyle={styles.tileContainerText}
                 onPress={() =>
                   this.goToScreen(
                     "FlashcardsScreen",
@@ -169,24 +183,18 @@ export default class SetScreen extends Component {
                 }
               />
               <Tile
-                width={this.state.width / 2}
-                height={125}
-                imageSrc={require("../img/zdj.png")}
-                featured
-                title="Pisanie"
-                onPress={() =>
-                  this.goToScreen(
-                    "WritingScreen",
-                    this.props.set.wordsAndDefinitions
-                  )
-                }
-              />
-              <Tile
-                width={this.state.width / 2}
-                height={125}
-                imageSrc={require("../img/zdj.png")}
+                width={this.state.width / 3}
+                height={100}
+                overlayContainerStyle={styles.tileContainer}
+                icon={{
+                  name: "graduation-cap",
+                  type: "font-awesome",
+                  color: "#4E046D",
+                  size: 40
+                }}
                 featured
                 title="Test"
+                titleStyle={styles.tileContainerText}
                 onPress={() =>
                   this.goToScreen(
                     "TestScreen",
@@ -197,13 +205,40 @@ export default class SetScreen extends Component {
               />
               <Tile
                 width={this.state.width / 2}
-                height={125}
-                imageSrc={require("../img/zdj.png")}
+                height={100}
+                overlayContainerStyle={styles.tileContainer}
+                icon={{
+                  name: "leanpub",
+                  type: "font-awesome",
+                  color: "#4E046D",
+                  size: 38
+                }}
                 featured
                 title="Ucz się"
+                titleStyle={styles.tileContainerText}
                 onPress={() =>
                   this.goToScreen(
                     "LearnScreen",
+                    this.props.set.wordsAndDefinitions
+                  )
+                }
+              />
+              <Tile
+                width={this.state.width / 2}
+                height={100}
+                overlayContainerStyle={styles.tileContainer}
+                icon={{
+                  name: "edit",
+                  type: "font-awesome",
+                  color: "#4E046D",
+                  size: 38
+                }}
+                featured
+                title="Pisanie"
+                titleStyle={styles.tileContainerText}
+                onPress={() =>
+                  this.goToScreen(
+                    "WritingScreen",
                     this.props.set.wordsAndDefinitions
                   )
                 }
@@ -248,5 +283,15 @@ const styles = StyleSheet.create({
   bottomWordContainerText: {
     fontSize: 20,
     margin: 5
+  },
+  tileContainer: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#4E046D",
+    borderStyle: "solid"
+  },
+  tileContainerText: {
+    color: "#4E046D",
+    marginTop: 15
   }
 });
