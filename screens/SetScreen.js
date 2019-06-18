@@ -69,10 +69,16 @@ export default class SetScreen extends Component {
     );
   };
 
-  deleteSetFromDb = () => {
+  deleteSetFromDb = async () => {
     let query = `DELETE FROM sets WHERE id = ${this.state.set.id}`;
-    db.executeSql(query);
-    Navigation.popToRoot(this.props.componentId);
+    await db.executeSql(query);
+    await Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: "MySetsScreen"
+        }
+      }
+    ]);
   };
 
   onEditIconPressed = () => {
