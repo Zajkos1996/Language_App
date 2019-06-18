@@ -1,5 +1,4 @@
 import { Navigation } from "react-native-navigation";
-import App from "./App";
 import SettingsScreen from "./screens/SettingsScreen";
 import MySetsScreen from "./screens/MySetsScreen";
 import CreateNewSetScreen from "./screens/CreateNewSetScreen";
@@ -12,7 +11,6 @@ import ResultFromTestScreen from "./screens/ResultFromTestScreen";
 import SetScreen from "./screens/SetScreen";
 import EditSetScreen from "./screens/EditSetScreen";
 
-Navigation.registerComponent("App", () => App);
 Navigation.registerComponent("SettingsScreen", () => SettingsScreen);
 Navigation.registerComponent("MySetsScreen", () => MySetsScreen);
 Navigation.registerComponent("CreateNewSetScreen", () => CreateNewSetScreen);
@@ -51,11 +49,6 @@ Navigation.events().registerAppLaunchedListener(() => {
           {
             component: {
               name: "MySetsScreen"
-              // options: {
-              //   bottomTab: {
-              //     text: "LearningApp"
-              //   }
-              // }
             }
           }
         ]
