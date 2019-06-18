@@ -150,7 +150,8 @@ export default class SetScreen extends Component {
                 onPress={() =>
                   this.goToScreen(
                     "ChoiceAbcdScreen",
-                    this.props.set.wordsAndDefinitions
+                    this.props.set.wordsAndDefinitions,
+                    this.state.allSetsFromDb
                   )
                 }
               />
