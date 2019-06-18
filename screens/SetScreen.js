@@ -1,23 +1,89 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native";
-import { Tile } from "react-native-elements";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Dimensions,
+  StatusBar,
+  Alert
+} from "react-native";
+import { Tile, Header } from "react-native-elements";
 import { Navigation } from "react-native-navigation";
+import SQLite from "react-native-sqlite-storage";
+
+var db = SQLite.openDatabase({
+  name: "md.db",
+  createFromLocation: 1
+});
 
 export default class SetScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       width: Dimensions.get("window").width,
-      set: this.props.set
+      set: this.props.set,
+      allSetsFromDb: []
     };
   }
 
-  goToScreen = (screenName, wordsAndDefinitions) => {
+  downloadDataFromDatabase = async () => {
+    await db.transaction(tx => {
+      tx.executeSql("SELECT * FROM sets;", [], (tx, results) => {
+        let sets = [];
+        for (let i = 0; i < results.rows.length; i++) {
+          sets[i] = results.rows.item(i);
+        }
+        this.setState({ allSetsFromDb: sets });
+      });
+    });
+  };
+
+  async componentDidMount() {
+    await this.downloadDataFromDatabase();
+  }
+
+  goToScreen = (screenName, wordsAndDefinitions, allSetsFromDb = "") => {
     Navigation.push(this.props.componentId, {
       component: {
         name: screenName,
         passProps: {
-          wordsAndDefinitions
+          wordsAndDefinitions,
+          allSetsFromDb
+        }
+      }
+    });
+  };
+
+  onDeleteIconPressed = () => {
+    Alert.alert(
+      "Usuń zestaw",
+      "Czy na pewno chcesz usunąć ten zestaw?",
+      [
+        {
+          text: "Nie"
+        },
+        { text: "Tak", onPress: () => this.deleteSetFromDb() }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  deleteSetFromDb = () => {
+    let query = `DELETE FROM sets WHERE id = ${this.state.set.id}`;
+    db.executeSql(query);
+    Navigation.popToRoot(this.props.componentId);
+  };
+
+  onEditIconPressed = () => {
+    Navigation.push(this.props.componentId, {
+      component: {
+        name: "EditSetScreen",
+        passProps: {
+          id: this.state.set.id,
+          name: this.state.set.name,
+          desc: this.state.set.desc,
+          wordsAndDefinitions: this.state.set.wordsAndDefinitions
         }
       }
     });
@@ -28,135 +94,204 @@ export default class SetScreen extends Component {
     let rows = [];
     JSON.parse(wordsAndDefinitions).forEach((wordAndDefinition, index) => {
       rows.push(
-        <View key={index} style={styles.tablica}>
-          <Text style={styles.welcome}>{wordAndDefinition.wordValue} </Text>
-          <Text style={styles.welcome}>
-            {wordAndDefinition.definitionValue}
-          </Text>
+        <View key={index} style={styles.wordsContainer}>
+          <View style={styles.topWordContainer}>
+            <Text style={styles.topWordContainerText}>
+              {wordAndDefinition.wordValue}{" "}
+            </Text>
+          </View>
+
+          <View>
+            <Text style={styles.bottomWordContainerText}>
+              {wordAndDefinition.definitionValue}
+            </Text>
+          </View>
         </View>
       );
     });
 
     return (
-      <View style={styles.container}>
-        <ScrollView>
-          <Text
-            style={{
-              marginTop: 20,
-              fontSize: 20,
-              margin: 10,
-              fontWeight: "bold",
-              textAlign: "center"
+      <View style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Header
+            leftComponent={{
+              icon: "delete",
+              color: "#fff",
+              onPress: () => this.onDeleteIconPressed()
             }}
-          >
-            Zestaw
-          </Text>
-          <View
-            style={{
-              flex: 1,
-              flexWrap: "wrap",
-              flexDirection: "row"
+            centerComponent={{
+              text: "Zestaw",
+              style: styles.headerTitleText
             }}
-          >
-            <Tile
-              width={this.state.width / 2}
-              height={125}
-              imageSrc={require("../img/zdj.png")}
-              featured
-              title="Wybór Abcd"
-              onPress={() =>
-                this.goToScreen(
-                  "ChoiceAbcdScreen",
-                  this.props.set.wordsAndDefinitions
-                )
-              }
-            />
-            <Tile
-              width={this.state.width / 2}
-              height={125}
-              imageSrc={require("../img/zdj.png")}
-              featured
-              title="Fiszki"
-              onPress={() =>
-                this.goToScreen(
-                  "FlashcardsScreen",
-                  this.props.set.wordsAndDefinitions
-                )
-              }
-            />
-            <Tile
-              width={this.state.width / 2}
-              height={125}
-              imageSrc={require("../img/zdj.png")}
-              featured
-              title="Pisanie"
-              onPress={() =>
-                this.goToScreen(
-                  "WritingScreen",
-                  this.props.set.wordsAndDefinitions
-                )
-              }
-            />
-            <Tile
-              width={this.state.width / 2}
-              height={125}
-              imageSrc={require("../img/zdj.png")}
-              featured
-              title="Test"
-              onPress={() => this.goToScreen("TestScreen")}
-            />
-            <Tile
-              width={this.state.width / 2}
-              height={125}
-              imageSrc={require("../img/zdj.png")}
-              featured
-              title="Ucz się"
-              onPress={() =>
-                this.goToScreen(
-                  "LearnScreen",
-                  this.props.set.wordsAndDefinitions
-                )
-              }
-            />
-          </View>
-          {rows}
-        </ScrollView>
+            rightComponent={{
+              icon: "edit",
+              color: "#fff",
+              onPress: () => this.onEditIconPressed()
+            }}
+            containerStyle={{
+              backgroundColor: "#4E046D",
+              marginTop: (StatusBar.currentHeight || 0) * -1
+            }}
+          />
+          <ScrollView>
+            <View
+              style={{
+                flex: 1,
+                flexWrap: "wrap",
+                flexDirection: "row"
+              }}
+            >
+              <Tile
+                width={this.state.width / 3}
+                height={100}
+                overlayContainerStyle={styles.tileContainer}
+                icon={{
+                  name: "grid",
+                  type: "feather",
+                  color: "#4E046D",
+                  size: 38
+                }}
+                featured
+                title="Abcd"
+                titleStyle={styles.tileContainerText}
+                onPress={() =>
+                  this.goToScreen(
+                    "ChoiceAbcdScreen",
+                    this.props.set.wordsAndDefinitions,
+                    this.state.allSetsFromDb
+                  )
+                }
+              />
+              <Tile
+                width={this.state.width / 3}
+                height={100}
+                overlayContainerStyle={styles.tileContainer}
+                icon={{
+                  name: "switcher",
+                  type: "antdesign",
+                  color: "#4E046D",
+                  size: 38
+                }}
+                featured
+                title="Fiszki"
+                titleStyle={styles.tileContainerText}
+                onPress={() =>
+                  this.goToScreen(
+                    "FlashcardsScreen",
+                    this.props.set.wordsAndDefinitions
+                  )
+                }
+              />
+              <Tile
+                width={this.state.width / 3}
+                height={100}
+                overlayContainerStyle={styles.tileContainer}
+                icon={{
+                  name: "graduation-cap",
+                  type: "font-awesome",
+                  color: "#4E046D",
+                  size: 40
+                }}
+                featured
+                title="Test"
+                titleStyle={styles.tileContainerText}
+                onPress={() =>
+                  this.goToScreen(
+                    "TestScreen",
+                    this.props.set.wordsAndDefinitions,
+                    this.state.allSetsFromDb
+                  )
+                }
+              />
+              <Tile
+                width={this.state.width / 2}
+                height={100}
+                overlayContainerStyle={styles.tileContainer}
+                icon={{
+                  name: "leanpub",
+                  type: "font-awesome",
+                  color: "#4E046D",
+                  size: 38
+                }}
+                featured
+                title="Ucz się"
+                titleStyle={styles.tileContainerText}
+                onPress={() =>
+                  this.goToScreen(
+                    "LearnScreen",
+                    this.props.set.wordsAndDefinitions
+                  )
+                }
+              />
+              <Tile
+                width={this.state.width / 2}
+                height={100}
+                overlayContainerStyle={styles.tileContainer}
+                icon={{
+                  name: "edit",
+                  type: "font-awesome",
+                  color: "#4E046D",
+                  size: 38
+                }}
+                featured
+                title="Pisanie"
+                titleStyle={styles.tileContainerText}
+                onPress={() =>
+                  this.goToScreen(
+                    "WritingScreen",
+                    this.props.set.wordsAndDefinitions
+                  )
+                }
+              />
+            </View>
+            {rows}
+          </ScrollView>
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  headerTitleText: {
+    fontWeight: "700",
+    fontSize: 20,
+    color: "#fff"
+  },
   container: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#5388d0",
     alignItems: "center"
   },
-  welcome: {
+  wordsContainer: {
+    padding: 10,
+    borderRadius: 5,
+    margin: 10,
+    backgroundColor: "#fff"
+  },
+  topWordContainer: {
+    borderBottomWidth: 1,
+    borderBottomColor: "black",
+    borderStyle: "solid"
+  },
+  topWordContainerText: {
     fontSize: 20,
     margin: 5,
-    fontWeight: "bold"
+    fontWeight: "500"
   },
-
-  tablica: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderWidth: 1,
-    borderColor: "black",
-    borderStyle: "solid",
-    margin: 10,
-    backgroundColor: "silver"
+  bottomWordContainerText: {
+    fontSize: 20,
+    margin: 5
   },
-  text: {
-    height: 40,
-    marginLeft: 20,
-    marginRight: 20,
-    width: 350,
-    borderStyle: "solid",
+  tileContainer: {
+    backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: "black",
-    textAlign: "center",
-    fontSize: 20
+    borderColor: "#4E046D",
+    borderStyle: "solid"
+  },
+  tileContainerText: {
+    color: "#4E046D",
+    marginTop: 15
   }
 });

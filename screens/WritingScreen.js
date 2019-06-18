@@ -4,8 +4,11 @@ import {
   Text,
   TextInput,
   View,
-  TouchableOpacity
+  StatusBar,
+  Alert
 } from "react-native";
+import { Navigation } from "react-native-navigation";
+import { Button, Header } from "react-native-elements";
 
 export default class WritingScreen extends Component {
   constructor(props) {
@@ -13,98 +16,180 @@ export default class WritingScreen extends Component {
     this.state = {
       wordsAndDefinitions: JSON.parse(this.props.wordsAndDefinitions),
       userAnswer: "",
-      questionId: 0,
-      answeredQuestionCount: 0
+      currentWordAndDefinition: JSON.parse(this.props.wordsAndDefinitions)[0],
+      isCorrectAnswer: false,
+      isAnswered: false,
+      messageToAnswer: "",
+      score: 0
     };
   }
 
-  goToScreen = screenName => {
+  goToResultScreen = () => {
     Navigation.push(this.props.componentId, {
       component: {
-        name: screenName
+        name: "ResultFromTestScreen",
+        passProps: {
+          score: this.state.score,
+          availablePoints: this.state.wordsAndDefinitions.length,
+          lastScreen: "WritingScreen",
+          wordsAndDefinitions: this.state.wordsAndDefinitions,
+          allSetsFromDb: this.state.sets
+        }
       }
     });
   };
 
-  checkAnswer = () => {
-    // destructuring
-
-    console.log(
-      "id pytania: " +
-        this.state.questionId +
-        " odpowiedz: " +
-        this.state.userAnswer
-    );
-
-    this.state.wordsAndDefinitions.forEach(elem => console.log(elem));
-
+  checkAnswer = async () => {
     if (
-      this.state.wordsAndDefinitions[this.state.questionId].definitionValue
+      this.state.currentWordAndDefinition.definitionValue
         .trim()
         .toLowerCase() === this.state.userAnswer.trim().toLowerCase()
     ) {
-      // correct answer
-      console.log("correct");
-      this.setState(state => {
-        const wordsAndDefinitions = state.wordsAndDefinitions.filter(
-          (item, j) => state.questionId !== j
-        );
-
-        return {
-          wordsAndDefinitions
-        };
+      await this.setState({
+        isCorrectAnswer: true,
+        messageToAnswer: "Dobrze!",
+        score: this.state.score + 1
       });
     } else {
-      // incorrect answer
-      console.log("incorrect");
+      await this.setState({ isCorrectAnswer: false, messageToAnswer: "Źle!" });
+    }
+    await this.setState({ isAnswered: true });
+
+    setTimeout(() => {
+      if (
+        this.state.currentWordAndDefinition.id >=
+        this.state.wordsAndDefinitions.length
+      ) {
+        this.goToResultScreen("ResultFromTestScreen");
+      }
+
+      this.changeNext();
+
+      this.userInput.clear();
 
       this.setState({
-        questionId: this.state.questionId + 1
+        isCorrectAnswer: false,
+        isAnswered: false,
+        messageToAnswer: ""
       });
-    }
+    }, 1100);
+  };
 
-    if (
-      this.state.questionId + 1 > this.state.wordsAndDefinitions.length &&
-      this.state.wordsAndDefinitions.length > 0
-    ) {
+  changeNext = () => {
+    let currentId = this.state.currentWordAndDefinition.id - 1;
+    if (currentId < this.state.wordsAndDefinitions.length - 1) {
+      currentId++;
       this.setState({
-        questionId: 0
+        currentWordAndDefinition: this.state.wordsAndDefinitions[currentId]
       });
-      return;
     }
+  };
 
-    if (this.state.wordsAndDefinitions.length == 0) {
-      // do ekranu wyniku
-      this.goToScreen("MySetsScreen");
+  onExit = () => {
+    Alert.alert(
+      "Pisanie",
+      "Czy na pewno chcesz przerwać naukę?",
+      [
+        {
+          text: "Nie"
+        },
+        {
+          text: "Tak",
+          onPress: () => {
+            Navigation.popToRoot(this.props.componentId);
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  getStyleForAnswerInput = (isAnswered, isCorrectAnswer) => {
+    if (isAnswered && isCorrectAnswer) {
+      return {
+        fontSize: 24,
+        textAlign: "center",
+        marginVertical: 20,
+        textAlign: "center",
+        width: "90%",
+        borderRadius: 5,
+        backgroundColor: "#2ECC71",
+        borderStyle: "solid",
+        borderWidth: 1,
+        borderColor: "#2ECC71"
+      };
+    } else if (isAnswered && !isCorrectAnswer) {
+      return {
+        fontSize: 24,
+        textAlign: "center",
+        marginVertical: 20,
+        textAlign: "center",
+        width: "90%",
+        borderRadius: 5,
+        backgroundColor: "#B71C0C",
+        borderStyle: "solid",
+        borderWidth: 1,
+        borderColor: "#B71C0C"
+      };
+    } else {
+      return {
+        fontSize: 24,
+        textAlign: "center",
+        marginVertical: 20,
+        textAlign: "center",
+        width: "90%",
+        borderRadius: 5,
+        backgroundColor: "#fff"
+      };
     }
   };
 
   render() {
     return (
-      <View style={styles.container}>
-        <View>
-          <Text style={styles.welcome}>
-            {this.state.wordsAndDefinitions[this.state.questionId].wordValue !==
-            undefined
-              ? this.state.wordsAndDefinitions[this.state.questionId].wordValue
-              : null}
-          </Text>
-        </View>
-        <View style={styles.tab}>
+      <View style={{ flex: 1 }}>
+        <Header
+          centerComponent={{
+            text: "Pisanie",
+            style: styles.headerTitleText
+          }}
+          rightComponent={{
+            icon: "clear",
+            color: "#fff",
+            onPress: () => this.onExit()
+          }}
+          containerStyle={{
+            backgroundColor: "#4E046D",
+            marginTop: (StatusBar.currentHeight || 0) * -1
+          }}
+        />
+        <View style={styles.container}>
+          <View>
+            <Text style={styles.wordTxt}>
+              {this.state.currentWordAndDefinition.wordValue}
+            </Text>
+          </View>
+
           <TextInput
-            style={styles.txt}
+            style={this.getStyleForAnswerInput(
+              this.state.isAnswered,
+              this.state.isCorrectAnswer
+            )}
             onChangeText={text => this.setState({ userAnswer: text })}
+            ref={input => {
+              this.userInput = input;
+            }}
           />
-        </View>
-        <View style={styles.btn}>
-          <TouchableOpacity>
-            <Text style={styles.txt}>Nie wiem</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.btn}>
-          <TouchableOpacity onPress={this.checkAnswer}>
-            <Text style={styles.txt}>Dalej</Text>
-          </TouchableOpacity>
+
+          <Button
+            title="Dalej"
+            disabled={this.state.isAnswered}
+            onPress={this.checkAnswer}
+            buttonStyle={{ backgroundColor: "#4E046D", paddingHorizontal: 30 }}
+          />
+
+          <Text style={styles.messageToAnswer}>
+            {this.state.messageToAnswer}
+          </Text>
         </View>
       </View>
     );
@@ -112,38 +197,27 @@ export default class WritingScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+  headerTitleText: {
+    fontWeight: "700",
+    fontSize: 20,
+    color: "#fff"
+  },
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#F5FCFF"
+    justifyContent: "center",
+    backgroundColor: "#5388d0"
   },
-  welcome: {
+  messageToAnswer: {
     fontSize: 40,
     textAlign: "center",
-    marginTop: 10
+    marginVertical: 15,
+    color: "#fff"
   },
-  txt: {
-    fontSize: 30,
+  wordTxt: {
+    fontSize: 48,
     textAlign: "center",
-    marginLeft: 15,
-    marginRight: 15
-  },
-  tab: {
-    borderWidth: 1,
-    borderColor: "black",
-    borderStyle: "solid",
-    marginTop: 30,
-    marginBottom: 30,
-    textAlign: "center",
-    width: "90%",
-    borderRadius: 5
-  },
-  btn: {
-    marginTop: 30,
-    borderColor: "deepskyblue",
-    borderStyle: "solid",
-    borderWidth: 1,
-    backgroundColor: "deepskyblue",
-    borderRadius: 5
+    marginVertical: 15,
+    color: "#fff"
   }
 });

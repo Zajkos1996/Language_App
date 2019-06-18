@@ -1,7 +1,15 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+  Alert
+} from "react-native";
 import FlipCard from "react-native-card-flip";
-import { Button, Icon } from "react-native-elements";
+import { Header, Icon } from "react-native-elements";
+import { Navigation } from "react-native-navigation";
 
 export default class FlashcardsScreen extends Component {
   constructor(props) {
@@ -32,43 +40,82 @@ export default class FlashcardsScreen extends Component {
     }
   };
 
+  onExit = () => {
+    Alert.alert(
+      "Pisanie",
+      "Czy na pewno chcesz przerwać naukę?",
+      [
+        {
+          text: "Nie"
+        },
+        {
+          text: "Tak",
+          onPress: () => {
+            Navigation.popToRoot(this.props.componentId);
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   render() {
     return (
-      <View style={styles.container}>
-        <FlipCard style={styles.cardContainer} ref={card => (this.card = card)}>
-          <TouchableOpacity
-            style={styles.cardFront}
-            onPress={() => this.card.flip()}
+      <View style={{ flex: 1 }}>
+        <Header
+          centerComponent={{
+            text: "Fiszki",
+            style: styles.headerTitleText
+          }}
+          rightComponent={{
+            icon: "clear",
+            color: "#fff",
+            onPress: () => this.onExit()
+          }}
+          containerStyle={{
+            backgroundColor: "#4E046D",
+            marginTop: (StatusBar.currentHeight || 0) * -1
+          }}
+        />
+        <View style={styles.container}>
+          <FlipCard
+            style={styles.cardContainer}
+            ref={card => (this.card = card)}
           >
-            <Text style={styles.cardText}>
-              {this.state.currentWordAndDefinition.wordValue}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.cardBack}
-            onPress={() => this.card.flip()}
-          >
-            <Text style={styles.cardText}>
-              {this.state.currentWordAndDefinition.definitionValue}
-            </Text>
-          </TouchableOpacity>
-        </FlipCard>
+            <TouchableOpacity
+              style={styles.cardFront}
+              onPress={() => this.card.flip()}
+            >
+              <Text style={styles.cardText}>
+                {this.state.currentWordAndDefinition.wordValue}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.cardBack}
+              onPress={() => this.card.flip()}
+            >
+              <Text style={styles.cardText}>
+                {this.state.currentWordAndDefinition.definitionValue}
+              </Text>
+            </TouchableOpacity>
+          </FlipCard>
 
-        <View style={styles.buttonsContainer}>
-          <Icon
-            raised
-            name="arrow-left"
-            type="font-awesome"
-            color="#841584"
-            onPress={this.changePrevious}
-          />
-          <Icon
-            raised
-            name="arrow-right"
-            type="font-awesome"
-            color="#841584"
-            onPress={this.changeNext}
-          />
+          <View style={styles.buttonsContainer}>
+            <Icon
+              raised
+              name="arrow-left"
+              type="font-awesome"
+              color="#841584"
+              onPress={this.changePrevious}
+            />
+            <Icon
+              raised
+              name="arrow-right"
+              type="font-awesome"
+              color="#841584"
+              onPress={this.changeNext}
+            />
+          </View>
         </View>
       </View>
     );
@@ -76,6 +123,11 @@ export default class FlashcardsScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+  headerTitleText: {
+    fontWeight: "700",
+    fontSize: 20,
+    color: "#fff"
+  },
   container: {
     flex: 1,
     justifyContent: "center",
