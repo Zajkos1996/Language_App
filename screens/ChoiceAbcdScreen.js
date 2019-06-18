@@ -132,7 +132,7 @@ export default class ChoiceAbcdScreen extends Component {
         });
         this.changeQuestion();
       }
-    }, 3000);
+    }, 1100);
   };
 
   changeQuestion = async () => {

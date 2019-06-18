@@ -50,12 +50,12 @@ Navigation.events().registerAppLaunchedListener(() => {
         children: [
           {
             component: {
-              name: "App",
-              options: {
-                bottomTab: {
-                  text: "LearningApp"
-                }
-              }
+              name: "MySetsScreen"
+              // options: {
+              //   bottomTab: {
+              //     text: "LearningApp"
+              //   }
+              // }
             }
           }
         ]

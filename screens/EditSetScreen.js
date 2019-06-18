@@ -39,7 +39,13 @@ export default class EditSetScreen extends Component {
 
   onSaveIconPressed = async () => {
     await this.updateSetInDatabase();
-    Navigation.popToRoot(this.props.componentId);
+    await Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: "MySetsScreen"
+        }
+      }
+    ]);
   };
 
   renderRows = () => {

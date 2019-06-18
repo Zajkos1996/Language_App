@@ -38,7 +38,6 @@ export default class MySetsScreen extends Component {
         var sets = [];
         for (let i = 0; i < results.rows.length; i++) {
           sets[i] = results.rows.item(i);
-          console.log(results.rows.item(i));
         }
         this.setState({ sets: sets });
       });
