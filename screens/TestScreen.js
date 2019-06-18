@@ -222,8 +222,8 @@ export default class TestScreen extends Component {
 
   render() {
     return (
-      <ScrollView style={{ flex: 1 }}>
-        <ScrollView style={styles.container}>
+      <View style={{ flex: 1 }}>
+        <View style={styles.container}>
           <Header
             centerComponent={{
               text: "Test",
@@ -255,8 +255,8 @@ export default class TestScreen extends Component {
             {this.state.rowsWriting}
             <Button title="Zakończ test" onPress={this.onFinishTest} />
           </ScrollView>
-        </ScrollView>
-      </ScrollView>
+        </View>
+      </View>
     );
   }
 }
