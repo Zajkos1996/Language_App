@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, StatusBar } from "react-native";
+import { StyleSheet, Text, View, StatusBar, Alert } from "react-native";
 import CardStack, { Card } from "react-native-card-stack-swiper";
 import { Header } from "react-native-elements";
 import { Navigation } from "react-native-navigation";
@@ -30,6 +30,25 @@ export default class LearnScreen extends Component {
     return n % 2 == 0;
   }
 
+  onExit = () => {
+    Alert.alert(
+      "Pisanie",
+      "Czy na pewno chcesz przerwać naukę?",
+      [
+        {
+          text: "Nie"
+        },
+        {
+          text: "Tak",
+          onPress: () => {
+            Navigation.popToRoot(this.props.componentId);
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   render() {
     let cards = [];
     this.state.wordsAndDefinitions.forEach((wordsAndDefinition, index) => {
@@ -57,6 +76,11 @@ export default class LearnScreen extends Component {
           centerComponent={{
             text: "Nauka",
             style: styles.headerTitleText
+          }}
+          rightComponent={{
+            icon: "clear",
+            color: "#fff",
+            onPress: () => this.onExit()
           }}
           containerStyle={{
             backgroundColor: "#4E046D",
