@@ -44,15 +44,17 @@ export default class SetScreen extends Component {
   }
 
   goToScreen = (screenName, wordsAndDefinitions, allSetsFromDb = "") => {
-    Navigation.push(this.props.componentId, {
-      component: {
-        name: screenName,
-        passProps: {
-          wordsAndDefinitions,
-          allSetsFromDb
+    Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: screenName,
+          passProps: {
+            wordsAndDefinitions,
+            allSetsFromDb
+          }
         }
       }
-    });
+    ]);
   };
 
   onDeleteIconPressed = () => {

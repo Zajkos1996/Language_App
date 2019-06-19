@@ -25,18 +25,20 @@ export default class WritingScreen extends Component {
   }
 
   goToResultScreen = () => {
-    Navigation.push(this.props.componentId, {
-      component: {
-        name: "ResultFromTestScreen",
-        passProps: {
-          score: this.state.score,
-          availablePoints: this.state.wordsAndDefinitions.length,
-          lastScreen: "WritingScreen",
-          wordsAndDefinitions: this.state.wordsAndDefinitions,
-          allSetsFromDb: this.state.sets
+    Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: "ResultFromTestScreen",
+          passProps: {
+            score: this.state.score,
+            availablePoints: this.state.wordsAndDefinitions.length,
+            lastScreen: "WritingScreen",
+            wordsAndDefinitions: this.state.wordsAndDefinitions,
+            allSetsFromDb: this.state.sets
+          }
         }
       }
-    });
+    ]);
   };
 
   checkAnswer = async () => {

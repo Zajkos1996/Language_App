@@ -28,18 +28,20 @@ export default class TestScreen extends Component {
   }
 
   goToResultScreen = () => {
-    Navigation.push(this.props.componentId, {
-      component: {
-        name: "ResultFromTestScreen",
-        passProps: {
-          score: this.state.score,
-          availablePoints: 10,
-          lastScreen: "TestScreen",
-          wordsAndDefinitions: this.state.wordsAndDefinitions,
-          allSetsFromDb: this.state.sets
+    Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: "ResultFromTestScreen",
+          passProps: {
+            score: this.state.score,
+            availablePoints: 10,
+            lastScreen: "TestScreen",
+            wordsAndDefinitions: this.state.wordsAndDefinitions,
+            allSetsFromDb: this.state.sets
+          }
         }
       }
-    });
+    ]);
   };
 
   componentDidMount = async () => {
