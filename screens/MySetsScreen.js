@@ -64,10 +64,10 @@ export default class MySetsScreen extends Component {
             <Text style={styles.setContainerTitleTxt}>{set.name}</Text>
           </View>
           <View style={styles.setContainerDesc}>
-            <Text style={styles.setContainerTxt}>
+            <Text style={styles.setContainerDesc1}>
               {JSON.parse(set.wordsAndDefinitions).length} pojęć
             </Text>
-            <Text style={styles.setContainerTxt}>{set.desc}</Text>
+            <Text style={styles.setContainerDesc2}>{set.desc}</Text>
           </View>
         </TouchableOpacity>
       );
@@ -103,8 +103,6 @@ export default class MySetsScreen extends Component {
         />
         <View style={styles.container}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
-            {/* <Text style={styles.welcome}>Twoje zestawy </Text> */}
-
             {this.renderSets()}
           </ScrollView>
         </View>
@@ -143,10 +141,15 @@ const styles = StyleSheet.create({
   },
   setContainerTitleTxt: {
     color: "#000",
-    fontWeight: "700",
-    fontSize: 20
+    fontSize: 20,
+    fontFamily: "Lato-Bold"
   },
-  setContainerTxt: {
-    color: "#000"
+  setContainerDesc1: {
+    color: "#000",
+    marginVertical: 2
+  },
+  setContainerDesc2: {
+    color: "#000",
+    fontFamily: "Lato-Regular"
   }
 });

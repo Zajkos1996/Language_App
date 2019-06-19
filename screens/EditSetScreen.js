@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 5,
     fontSize: 18,
+    fontFamily: "Lato-Regular",
     backgroundColor: "#fff"
   },
   wordsContainer: {
@@ -155,6 +156,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 5,
     fontSize: 18,
+    fontFamily: "Lato-Regular",
     borderWidth: 1,
     borderColor: "#5388d0",
     borderStyle: "solid"

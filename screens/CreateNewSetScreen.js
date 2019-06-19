@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Navigation } from "react-native-navigation";
 import SQLite from "react-native-sqlite-storage";
-import { Icon, Header, Button } from "react-native-elements";
+import { Header, Button } from "react-native-elements";
 
 var db = SQLite.openDatabase({
   name: "md.db",
@@ -163,7 +163,10 @@ export default class CreateNewSetScreen extends Component {
             >
               <Button
                 title="Dodaj słówka"
-                buttonStyle={{ backgroundColor: "#4E046D" }}
+                buttonStyle={{
+                  backgroundColor: "#4E046D",
+                  fontFamily: "Lato-Bold"
+                }}
                 onPress={this.addNewWords}
               />
             </View>
@@ -203,6 +206,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius: 5,
     fontSize: 18,
+    fontFamily: "Lato-Regular",
     borderWidth: 1,
     borderColor: "#5388d0",
     borderStyle: "solid"
