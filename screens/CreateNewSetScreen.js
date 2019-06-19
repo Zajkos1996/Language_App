@@ -26,11 +26,13 @@ export default class CreateNewSetScreen extends Component {
   };
 
   goToScreen = screenName => {
-    Navigation.push(this.props.componentId, {
-      component: {
-        name: screenName
+    Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: screenName
+        }
       }
-    });
+    ]);
   };
 
   addSetToDatabase = () => {
@@ -60,7 +62,8 @@ export default class CreateNewSetScreen extends Component {
       );
     } else {
       this.addSetToDatabase();
-      this.goToScreen("App");
+      this.goToScreen("MySetsScreen");
+      // Navigation.popToRoot(this.props.componentId);
     }
   };
 

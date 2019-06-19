@@ -1,4 +1,4 @@
-package com.quiz;
+package com.languageapp;
 
 import com.reactnativenavigation.NavigationActivity;
 

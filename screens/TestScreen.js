@@ -51,18 +51,15 @@ export default class TestScreen extends Component {
       questionsWriting: questionsWriting
     });
 
-    // stworzenie rzędów pytań abcd
     let rowsAbcd = [];
     this.state.questionsAbcd.forEach((question, index) => {
       rowsAbcd.push(this.renderSingleAbcdChoice(question, index));
     });
 
-    // stworzenie rzedow pytań do wpisania
     let rowsWriting = this.renderWriting();
     await this.setState({ rowsAbcd: rowsAbcd, rowsWriting: rowsWriting });
   };
 
-  // Tworzy pytania do wyboru ABCD
   createAbcdQuestions = () => {
     let questions = [];
     for (let i = 0; i < this.state.wordsAndDefinitions.length; i++) {
@@ -88,7 +85,6 @@ export default class TestScreen extends Component {
   };
 
   createAbcdPossibleAnswers = correctAnswer => {
-    // Stworzenie mozliwych odpowiedzi, po pobraniu danych z bazy
     let possibleAnswers = [];
     this.state.sets.forEach(set => {
       let wordsAndDefinitions = JSON.parse(set.wordsAndDefinitions);
@@ -116,35 +112,38 @@ export default class TestScreen extends Component {
   };
 
   renderSingleAbcdChoice = (question, questionId) => {
-    let rows = [];
-
+    let rowsOfButtons = [];
     generatedPossAnswers = this.createAbcdPossibleAnswers(
       question.correctAnswer
     );
 
     generatedPossAnswers.forEach((ans, index) => {
-      if (index === 0) {
-        rows.push(
-          <Text style={styles.txtQuestion}>{question.questionTitle}</Text>
-        );
-      }
-
-      rows.push(
+      rowsOfButtons.push(
         <Button
           title={ans}
+          key={index}
           type="outline"
           onPress={() =>
-            this.countScoreFromAbcdChoice(
-              question.correctAnswer,
-              ans,
-              questionId
-            )
+            this.countScoreFromAbcdChoice(question.correctAnswer, ans)
           }
         />
       );
     });
 
-    return rows;
+    return (
+      <View key={questionId}>
+        <Text style={styles.txtQuestion}>{question.questionTitle}</Text>
+        {rowsOfButtons}
+      </View>
+    );
+  };
+
+  countScoreFromAbcdChoice = (correctAnswer, userAnswer) => {
+    if (userAnswer === correctAnswer) {
+      this.setState({
+        score: this.state.score + 1
+      });
+    }
   };
 
   renderWriting = () => {
@@ -168,19 +167,6 @@ export default class TestScreen extends Component {
     return rows;
   };
 
-  shuffleArray = array => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  };
-
-  countScoreFromAbcdChoice = async (correctAnswer, userAnswer, questionId) => {
-    if (userAnswer === correctAnswer) {
-      this.setState({ score: this.state.score + 1 });
-    }
-  };
-
   countScoreFromWriting = async () => {
     let points = 0;
     this.state.questionsWriting.forEach((question, index) => {
@@ -194,6 +180,13 @@ export default class TestScreen extends Component {
     await this.setState({
       score: this.state.score + points
     });
+  };
+
+  shuffleArray = array => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
   };
 
   onFinishTest = async () => {
@@ -221,6 +214,7 @@ export default class TestScreen extends Component {
   };
 
   render() {
+    const { rowsAbcd, rowsWriting } = this.state;
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.container}>
@@ -246,15 +240,19 @@ export default class TestScreen extends Component {
               </Text>
             </View>
 
-            {this.state.rowsAbcd}
+            {rowsAbcd}
             <View style={styles.questionHeader}>
               <Text style={styles.txtTaskTitle}>
                 2. Wpisz poprawną odpowiedź
               </Text>
             </View>
-            {this.state.rowsWriting}
-            <Button title="Zakończ test" onPress={this.onFinishTest} />
+            {rowsWriting}
           </ScrollView>
+          <Button
+            title="Zakończ test"
+            onPress={this.onFinishTest}
+            buttonStyle={{ marginTop: 10 }}
+          />
         </View>
       </View>
     );
@@ -279,17 +277,18 @@ const styles = StyleSheet.create({
   },
   txtTaskTitle: {
     fontSize: 16,
-    marginBottom: 10
+    marginVertical: 5,
+    fontWeight: "600"
   },
   txtQuestion: {
     textAlign: "center",
     fontSize: 24,
+    fontWeight: "500",
     marginTop: 15,
     marginBottom: 10
   },
   txtInput: {
-    fontSize: 24,
-    marginVertical: 15,
+    fontSize: 18,
     borderWidth: 1,
     borderColor: "#5388d0",
     borderStyle: "solid",
