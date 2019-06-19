@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, ScrollView, Dimensions, StatusBar } from "react-native";
+import { StyleSheet, View, ScrollView, Dimensions } from "react-native";
 import { Navigation } from "react-native-navigation";
 import { Tile } from "react-native-elements";
 
@@ -23,11 +23,6 @@ export default class App extends Component {
     const { width } = this.state;
     return (
       <View style={styles.container}>
-        <StatusBar
-          backgroundColor="#F5FCFF"
-          barStyle="light-content"
-
-          />
         <ScrollView>
           <View
             style={{
