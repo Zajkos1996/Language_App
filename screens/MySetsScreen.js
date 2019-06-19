@@ -27,7 +27,8 @@ export default class MySetsScreen extends Component {
       component: {
         name: screenName,
         passProps: {
-          set
+          set,
+          allSetsFromDb: this.state.sets
         }
       }
     });

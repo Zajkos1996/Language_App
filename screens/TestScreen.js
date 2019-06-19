@@ -209,7 +209,13 @@ export default class TestScreen extends Component {
         {
           text: "Tak",
           onPress: () => {
-            Navigation.popToRoot(this.props.componentId);
+            Navigation.setStackRoot(this.props.componentId, [
+              {
+                component: {
+                  name: "MySetsScreen"
+                }
+              }
+            ]);
           }
         }
       ],
@@ -254,8 +260,9 @@ export default class TestScreen extends Component {
           </ScrollView>
           <Button
             title="Zakończ test"
+            titleStyle={{ fontFamily: "Lato-Bold" }}
             onPress={this.onFinishTest}
-            buttonStyle={{ marginTop: 10, fontFamily: "Lato-Bold" }}
+            buttonStyle={{ marginTop: 10 }}
           />
         </View>
       </View>

@@ -98,7 +98,13 @@ export default class WritingScreen extends Component {
         {
           text: "Tak",
           onPress: () => {
-            Navigation.popToRoot(this.props.componentId);
+            Navigation.setStackRoot(this.props.componentId, [
+              {
+                component: {
+                  name: "MySetsScreen"
+                }
+              }
+            ]);
           }
         }
       ],
@@ -154,12 +160,12 @@ export default class WritingScreen extends Component {
 
           <Button
             title="Dalej"
+            titleStyle={{ fontFamily: "Lato-Bold" }}
             disabled={this.state.isAnswered}
             onPress={this.checkAnswer}
             buttonStyle={{
               backgroundColor: "#4E046D",
-              paddingHorizontal: 30,
-              fontFamily: "Lato-Bold"
+              paddingHorizontal: 30
             }}
           />
 

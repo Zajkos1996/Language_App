@@ -23,24 +23,8 @@ export default class SetScreen extends Component {
     this.state = {
       width: Dimensions.get("window").width,
       set: this.props.set,
-      allSetsFromDb: []
+      allSetsFromDb: this.props.allSetsFromDb
     };
-  }
-
-  downloadDataFromDatabase = async () => {
-    await db.transaction(tx => {
-      tx.executeSql("SELECT * FROM sets;", [], (tx, results) => {
-        let sets = [];
-        for (let i = 0; i < results.rows.length; i++) {
-          sets[i] = results.rows.item(i);
-        }
-        this.setState({ allSetsFromDb: sets });
-      });
-    });
-  };
-
-  async componentDidMount() {
-    await this.downloadDataFromDatabase();
   }
 
   goToScreen = (screenName, wordsAndDefinitions, allSetsFromDb = "") => {
