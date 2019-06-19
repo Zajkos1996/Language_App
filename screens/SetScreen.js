@@ -284,11 +284,12 @@ const styles = StyleSheet.create({
   topWordContainerText: {
     fontSize: 20,
     margin: 5,
-    fontWeight: "500"
+    fontFamily: "Lato-Bold"
   },
   bottomWordContainerText: {
     fontSize: 20,
-    margin: 5
+    margin: 5,
+    fontFamily: "Lato-Regular"
   },
   tileContainer: {
     backgroundColor: "transparent",
@@ -298,6 +299,7 @@ const styles = StyleSheet.create({
   },
   tileContainerText: {
     color: "#4E046D",
-    marginTop: 15
+    marginTop: 15,
+    fontFamily: "Lato-Regular"
   }
 });

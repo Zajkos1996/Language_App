@@ -121,8 +121,10 @@ export default class TestScreen extends Component {
       rowsOfButtons.push(
         <Button
           title={ans}
+          titleStyle={styles.answerButtonText}
           key={index}
           type="outline"
+          buttonStyle={styles.answerButton}
           onPress={() =>
             this.countScoreFromAbcdChoice(question.correctAnswer, ans)
           }
@@ -251,7 +253,7 @@ export default class TestScreen extends Component {
           <Button
             title="Zakończ test"
             onPress={this.onFinishTest}
-            buttonStyle={{ marginTop: 10 }}
+            buttonStyle={{ marginTop: 10, fontFamily: "Lato-Bold" }}
           />
         </View>
       </View>
@@ -278,14 +280,14 @@ const styles = StyleSheet.create({
   txtTaskTitle: {
     fontSize: 16,
     marginVertical: 5,
-    fontWeight: "600"
+    fontFamily: "Lato-Bold"
   },
   txtQuestion: {
     textAlign: "center",
     fontSize: 24,
-    fontWeight: "500",
     marginTop: 15,
-    marginBottom: 10
+    marginBottom: 10,
+    fontFamily: "Lato-Bold"
   },
   txtInput: {
     fontSize: 18,
@@ -293,6 +295,16 @@ const styles = StyleSheet.create({
     borderColor: "#5388d0",
     borderStyle: "solid",
     textAlign: "center",
-    borderRadius: 5
+    borderRadius: 5,
+    fontFamily: "Lato-Regular"
+  },
+  answerButton: {
+    width: "100%",
+    backgroundColor: "#fff",
+    marginVertical: 1
+  },
+  answerButtonText: {
+    fontSize: 20,
+    fontFamily: "Lato-Bold"
   }
 });

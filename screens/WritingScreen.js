@@ -106,41 +106,11 @@ export default class WritingScreen extends Component {
 
   getStyleForAnswerInput = (isAnswered, isCorrectAnswer) => {
     if (isAnswered && isCorrectAnswer) {
-      return {
-        fontSize: 24,
-        textAlign: "center",
-        marginVertical: 20,
-        textAlign: "center",
-        width: "90%",
-        borderRadius: 5,
-        backgroundColor: "#2ECC71",
-        borderStyle: "solid",
-        borderWidth: 1,
-        borderColor: "#2ECC71"
-      };
+      return styles.textInputCorrect;
     } else if (isAnswered && !isCorrectAnswer) {
-      return {
-        fontSize: 24,
-        textAlign: "center",
-        marginVertical: 20,
-        textAlign: "center",
-        width: "90%",
-        borderRadius: 5,
-        backgroundColor: "#B71C0C",
-        borderStyle: "solid",
-        borderWidth: 1,
-        borderColor: "#B71C0C"
-      };
+      return styles.textInputIncorrect;
     } else {
-      return {
-        fontSize: 24,
-        textAlign: "center",
-        marginVertical: 20,
-        textAlign: "center",
-        width: "90%",
-        borderRadius: 5,
-        backgroundColor: "#fff"
-      };
+      return styles.textInput;
     }
   };
 
@@ -184,7 +154,11 @@ export default class WritingScreen extends Component {
             title="Dalej"
             disabled={this.state.isAnswered}
             onPress={this.checkAnswer}
-            buttonStyle={{ backgroundColor: "#4E046D", paddingHorizontal: 30 }}
+            buttonStyle={{
+              backgroundColor: "#4E046D",
+              paddingHorizontal: 30,
+              fontFamily: "Lato-Bold"
+            }}
           />
 
           <Text style={styles.messageToAnswer}>
@@ -212,12 +186,50 @@ const styles = StyleSheet.create({
     fontSize: 40,
     textAlign: "center",
     marginVertical: 15,
-    color: "#fff"
+    color: "#fff",
+    fontFamily: "Lato-Bold"
   },
   wordTxt: {
     fontSize: 48,
     textAlign: "center",
     marginVertical: 15,
-    color: "#fff"
+    color: "#fff",
+    fontFamily: "Lato-Bold"
+  },
+  textInput: {
+    fontSize: 24,
+    textAlign: "center",
+    marginVertical: 20,
+    textAlign: "center",
+    width: "90%",
+    borderRadius: 5,
+    backgroundColor: "#fff",
+    fontFamily: "Lato-Regular"
+  },
+  textInputCorrect: {
+    fontSize: 24,
+    textAlign: "center",
+    marginVertical: 20,
+    textAlign: "center",
+    width: "90%",
+    borderRadius: 5,
+    backgroundColor: "#2ECC71",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#2ECC71",
+    fontFamily: "Lato-Regular"
+  },
+  textInputIncorrect: {
+    fontSize: 24,
+    textAlign: "center",
+    marginVertical: 20,
+    textAlign: "center",
+    width: "90%",
+    borderRadius: 5,
+    backgroundColor: "#B71C0C",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#B71C0C",
+    fontFamily: "Lato-Regular"
   }
 });

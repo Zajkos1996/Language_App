@@ -136,7 +136,8 @@ const styles = StyleSheet.create({
   },
   cardText: {
     fontSize: 54,
-    color: "#fff"
+    color: "#fff",
+    fontFamily: "Lato-Regular"
   },
   cardFront: {
     width: "100%",

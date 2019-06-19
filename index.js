@@ -1,5 +1,4 @@
 import { Navigation } from "react-native-navigation";
-import SettingsScreen from "./screens/SettingsScreen";
 import MySetsScreen from "./screens/MySetsScreen";
 import CreateNewSetScreen from "./screens/CreateNewSetScreen";
 import FlashcardsScreen from "./screens/FlashcardsScreen";
@@ -11,7 +10,6 @@ import ResultFromTestScreen from "./screens/ResultFromTestScreen";
 import SetScreen from "./screens/SetScreen";
 import EditSetScreen from "./screens/EditSetScreen";
 
-Navigation.registerComponent("SettingsScreen", () => SettingsScreen);
 Navigation.registerComponent("MySetsScreen", () => MySetsScreen);
 Navigation.registerComponent("CreateNewSetScreen", () => CreateNewSetScreen);
 Navigation.registerComponent("FlashcardsScreen", () => FlashcardsScreen);
