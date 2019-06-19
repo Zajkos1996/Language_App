@@ -51,7 +51,13 @@ export default class FlashcardsScreen extends Component {
         {
           text: "Tak",
           onPress: () => {
-            Navigation.popToRoot(this.props.componentId);
+            Navigation.setStackRoot(this.props.componentId, [
+              {
+                component: {
+                  name: "MySetsScreen"
+                }
+              }
+            ]);
           }
         }
       ],
@@ -136,7 +142,8 @@ const styles = StyleSheet.create({
   },
   cardText: {
     fontSize: 54,
-    color: "#fff"
+    color: "#fff",
+    fontFamily: "Lato-Regular"
   },
   cardFront: {
     width: "100%",

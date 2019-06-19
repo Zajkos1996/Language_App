@@ -27,18 +27,20 @@ export default class ChoiceAbcdScreen extends Component {
   }
 
   goToResultScreen = () => {
-    Navigation.push(this.props.componentId, {
-      component: {
-        name: "ResultFromTestScreen",
-        passProps: {
-          score: this.state.score,
-          availablePoints: this.state.wordsAndDefinitions.length,
-          lastScreen: "ChoiceAbcdScreen",
-          wordsAndDefinitions: this.state.wordsAndDefinitions,
-          allSetsFromDb: this.state.sets
+    Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: "ResultFromTestScreen",
+          passProps: {
+            score: this.state.score,
+            availablePoints: this.state.wordsAndDefinitions.length,
+            lastScreen: "ChoiceAbcdScreen",
+            wordsAndDefinitions: this.state.wordsAndDefinitions,
+            allSetsFromDb: this.state.sets
+          }
         }
       }
-    });
+    ]);
   };
 
   createPossibleAnswers = async () => {
@@ -153,7 +155,13 @@ export default class ChoiceAbcdScreen extends Component {
         {
           text: "Tak",
           onPress: () => {
-            Navigation.popToRoot(this.props.componentId);
+            Navigation.setStackRoot(this.props.componentId, [
+              {
+                component: {
+                  name: "MySetsScreen"
+                }
+              }
+            ]);
           }
         }
       ],
@@ -178,7 +186,7 @@ export default class ChoiceAbcdScreen extends Component {
       <View style={{ flex: 1 }}>
         <Header
           centerComponent={{
-            text: "Test",
+            text: "Abcd",
             style: styles.headerTitleText
           }}
           rightComponent={{
@@ -204,6 +212,7 @@ export default class ChoiceAbcdScreen extends Component {
               this.state.isCorrectAnswer,
               1
             )}
+            type="outline"
             buttonStyle={styles.answerButton}
             titleStyle={styles.answerButtonText}
             title={this.state.currQuestPossibleAnswers[0]}
@@ -218,6 +227,7 @@ export default class ChoiceAbcdScreen extends Component {
               this.state.isCorrectAnswer,
               2
             )}
+            type="outline"
             buttonStyle={styles.answerButton}
             titleStyle={styles.answerButtonText}
             title={this.state.currQuestPossibleAnswers[1]}
@@ -232,6 +242,7 @@ export default class ChoiceAbcdScreen extends Component {
               this.state.isCorrectAnswer,
               3
             )}
+            type="outline"
             buttonStyle={styles.answerButton}
             titleStyle={styles.answerButtonText}
             title={this.state.currQuestPossibleAnswers[2]}
@@ -246,6 +257,7 @@ export default class ChoiceAbcdScreen extends Component {
               this.state.isCorrectAnswer,
               4
             )}
+            type="outline"
             buttonStyle={styles.answerButton}
             titleStyle={styles.answerButtonText}
             title={this.state.currQuestPossibleAnswers[3]}
@@ -265,8 +277,8 @@ export default class ChoiceAbcdScreen extends Component {
 
 const styles = StyleSheet.create({
   headerTitleText: {
-    fontWeight: "700",
     fontSize: 20,
+    fontWeight: "700",
     color: "#fff"
   },
   container: {
@@ -287,25 +299,24 @@ const styles = StyleSheet.create({
     fontSize: 48,
     textAlign: "center",
     marginVertical: 15,
-    color: "#fff"
+    color: "#fff",
+    fontFamily: "Lato-Bold"
   },
   answerButton: {
     width: "100%",
-    borderColor: "#4E046D",
-    borderWidth: 1,
-    borderStyle: "solid",
     backgroundColor: "#fff",
     marginVertical: 1
   },
   answerButtonText: {
-    color: "#4E046D",
-    fontSize: 20
+    fontSize: 20,
+    fontFamily: "Lato-Bold"
   },
   messageToAnswer: {
     fontSize: 40,
     textAlign: "center",
     marginVertical: 15,
-    color: "#fff"
+    color: "#fff",
+    fontFamily: "Lato-Bold"
   },
   ansCorrect: {
     width: "100%",

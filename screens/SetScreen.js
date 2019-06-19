@@ -23,36 +23,22 @@ export default class SetScreen extends Component {
     this.state = {
       width: Dimensions.get("window").width,
       set: this.props.set,
-      allSetsFromDb: []
+      allSetsFromDb: this.props.allSetsFromDb
     };
   }
 
-  downloadDataFromDatabase = async () => {
-    await db.transaction(tx => {
-      tx.executeSql("SELECT * FROM sets;", [], (tx, results) => {
-        let sets = [];
-        for (let i = 0; i < results.rows.length; i++) {
-          sets[i] = results.rows.item(i);
-        }
-        this.setState({ allSetsFromDb: sets });
-      });
-    });
-  };
-
-  async componentDidMount() {
-    await this.downloadDataFromDatabase();
-  }
-
   goToScreen = (screenName, wordsAndDefinitions, allSetsFromDb = "") => {
-    Navigation.push(this.props.componentId, {
-      component: {
-        name: screenName,
-        passProps: {
-          wordsAndDefinitions,
-          allSetsFromDb
+    Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: screenName,
+          passProps: {
+            wordsAndDefinitions,
+            allSetsFromDb
+          }
         }
       }
-    });
+    ]);
   };
 
   onDeleteIconPressed = () => {
@@ -284,11 +270,12 @@ const styles = StyleSheet.create({
   topWordContainerText: {
     fontSize: 20,
     margin: 5,
-    fontWeight: "500"
+    fontFamily: "Lato-Bold"
   },
   bottomWordContainerText: {
     fontSize: 20,
-    margin: 5
+    margin: 5,
+    fontFamily: "Lato-Regular"
   },
   tileContainer: {
     backgroundColor: "transparent",
@@ -298,6 +285,7 @@ const styles = StyleSheet.create({
   },
   tileContainerText: {
     color: "#4E046D",
-    marginTop: 15
+    marginTop: 15,
+    fontFamily: "Lato-Regular"
   }
 });

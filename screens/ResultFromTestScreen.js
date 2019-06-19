@@ -75,16 +75,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 36,
-    color: "#fff"
+    color: "#fff",
+    fontFamily: "Lato-Regular"
   },
   points: {
     color: "#fff",
     fontSize: 48,
-    fontWeight: "700",
+    fontFamily: "Lato-Bold",
     marginVertical: 20
   },
   btnTitle: {
-    color: "#fff"
+    color: "#fff",
+    fontFamily: "Lato-Bold"
   },
   btn: {
     borderColor: "#fff"

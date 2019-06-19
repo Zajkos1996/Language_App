@@ -28,18 +28,20 @@ export default class TestScreen extends Component {
   }
 
   goToResultScreen = () => {
-    Navigation.push(this.props.componentId, {
-      component: {
-        name: "ResultFromTestScreen",
-        passProps: {
-          score: this.state.score,
-          availablePoints: 10,
-          lastScreen: "TestScreen",
-          wordsAndDefinitions: this.state.wordsAndDefinitions,
-          allSetsFromDb: this.state.sets
+    Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: "ResultFromTestScreen",
+          passProps: {
+            score: this.state.score,
+            availablePoints: 10,
+            lastScreen: "TestScreen",
+            wordsAndDefinitions: this.state.wordsAndDefinitions,
+            allSetsFromDb: this.state.sets
+          }
         }
       }
-    });
+    ]);
   };
 
   componentDidMount = async () => {
@@ -121,8 +123,10 @@ export default class TestScreen extends Component {
       rowsOfButtons.push(
         <Button
           title={ans}
+          titleStyle={styles.answerButtonText}
           key={index}
           type="outline"
+          buttonStyle={styles.answerButton}
           onPress={() =>
             this.countScoreFromAbcdChoice(question.correctAnswer, ans)
           }
@@ -205,7 +209,13 @@ export default class TestScreen extends Component {
         {
           text: "Tak",
           onPress: () => {
-            Navigation.popToRoot(this.props.componentId);
+            Navigation.setStackRoot(this.props.componentId, [
+              {
+                component: {
+                  name: "MySetsScreen"
+                }
+              }
+            ]);
           }
         }
       ],
@@ -250,6 +260,7 @@ export default class TestScreen extends Component {
           </ScrollView>
           <Button
             title="Zakończ test"
+            titleStyle={{ fontFamily: "Lato-Bold" }}
             onPress={this.onFinishTest}
             buttonStyle={{ marginTop: 10 }}
           />
@@ -278,14 +289,14 @@ const styles = StyleSheet.create({
   txtTaskTitle: {
     fontSize: 16,
     marginVertical: 5,
-    fontWeight: "600"
+    fontFamily: "Lato-Bold"
   },
   txtQuestion: {
     textAlign: "center",
     fontSize: 24,
-    fontWeight: "500",
     marginTop: 15,
-    marginBottom: 10
+    marginBottom: 10,
+    fontFamily: "Lato-Bold"
   },
   txtInput: {
     fontSize: 18,
@@ -293,6 +304,16 @@ const styles = StyleSheet.create({
     borderColor: "#5388d0",
     borderStyle: "solid",
     textAlign: "center",
-    borderRadius: 5
+    borderRadius: 5,
+    fontFamily: "Lato-Regular"
+  },
+  answerButton: {
+    width: "100%",
+    backgroundColor: "#fff",
+    marginVertical: 1
+  },
+  answerButtonText: {
+    fontSize: 20,
+    fontFamily: "Lato-Bold"
   }
 });

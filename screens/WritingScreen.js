@@ -25,18 +25,20 @@ export default class WritingScreen extends Component {
   }
 
   goToResultScreen = () => {
-    Navigation.push(this.props.componentId, {
-      component: {
-        name: "ResultFromTestScreen",
-        passProps: {
-          score: this.state.score,
-          availablePoints: this.state.wordsAndDefinitions.length,
-          lastScreen: "WritingScreen",
-          wordsAndDefinitions: this.state.wordsAndDefinitions,
-          allSetsFromDb: this.state.sets
+    Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: "ResultFromTestScreen",
+          passProps: {
+            score: this.state.score,
+            availablePoints: this.state.wordsAndDefinitions.length,
+            lastScreen: "WritingScreen",
+            wordsAndDefinitions: this.state.wordsAndDefinitions,
+            allSetsFromDb: this.state.sets
+          }
         }
       }
-    });
+    ]);
   };
 
   checkAnswer = async () => {
@@ -96,7 +98,13 @@ export default class WritingScreen extends Component {
         {
           text: "Tak",
           onPress: () => {
-            Navigation.popToRoot(this.props.componentId);
+            Navigation.setStackRoot(this.props.componentId, [
+              {
+                component: {
+                  name: "MySetsScreen"
+                }
+              }
+            ]);
           }
         }
       ],
@@ -106,41 +114,11 @@ export default class WritingScreen extends Component {
 
   getStyleForAnswerInput = (isAnswered, isCorrectAnswer) => {
     if (isAnswered && isCorrectAnswer) {
-      return {
-        fontSize: 24,
-        textAlign: "center",
-        marginVertical: 20,
-        textAlign: "center",
-        width: "90%",
-        borderRadius: 5,
-        backgroundColor: "#2ECC71",
-        borderStyle: "solid",
-        borderWidth: 1,
-        borderColor: "#2ECC71"
-      };
+      return styles.textInputCorrect;
     } else if (isAnswered && !isCorrectAnswer) {
-      return {
-        fontSize: 24,
-        textAlign: "center",
-        marginVertical: 20,
-        textAlign: "center",
-        width: "90%",
-        borderRadius: 5,
-        backgroundColor: "#B71C0C",
-        borderStyle: "solid",
-        borderWidth: 1,
-        borderColor: "#B71C0C"
-      };
+      return styles.textInputIncorrect;
     } else {
-      return {
-        fontSize: 24,
-        textAlign: "center",
-        marginVertical: 20,
-        textAlign: "center",
-        width: "90%",
-        borderRadius: 5,
-        backgroundColor: "#fff"
-      };
+      return styles.textInput;
     }
   };
 
@@ -182,9 +160,13 @@ export default class WritingScreen extends Component {
 
           <Button
             title="Dalej"
+            titleStyle={{ fontFamily: "Lato-Bold" }}
             disabled={this.state.isAnswered}
             onPress={this.checkAnswer}
-            buttonStyle={{ backgroundColor: "#4E046D", paddingHorizontal: 30 }}
+            buttonStyle={{
+              backgroundColor: "#4E046D",
+              paddingHorizontal: 30
+            }}
           />
 
           <Text style={styles.messageToAnswer}>
@@ -212,12 +194,50 @@ const styles = StyleSheet.create({
     fontSize: 40,
     textAlign: "center",
     marginVertical: 15,
-    color: "#fff"
+    color: "#fff",
+    fontFamily: "Lato-Bold"
   },
   wordTxt: {
     fontSize: 48,
     textAlign: "center",
     marginVertical: 15,
-    color: "#fff"
+    color: "#fff",
+    fontFamily: "Lato-Bold"
+  },
+  textInput: {
+    fontSize: 24,
+    textAlign: "center",
+    marginVertical: 20,
+    textAlign: "center",
+    width: "90%",
+    borderRadius: 5,
+    backgroundColor: "#fff",
+    fontFamily: "Lato-Regular"
+  },
+  textInputCorrect: {
+    fontSize: 24,
+    textAlign: "center",
+    marginVertical: 20,
+    textAlign: "center",
+    width: "90%",
+    borderRadius: 5,
+    backgroundColor: "#2ECC71",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#2ECC71",
+    fontFamily: "Lato-Regular"
+  },
+  textInputIncorrect: {
+    fontSize: 24,
+    textAlign: "center",
+    marginVertical: 20,
+    textAlign: "center",
+    width: "90%",
+    borderRadius: 5,
+    backgroundColor: "#B71C0C",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#B71C0C",
+    fontFamily: "Lato-Regular"
   }
 });

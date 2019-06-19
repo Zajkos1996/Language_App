@@ -41,7 +41,13 @@ export default class LearnScreen extends Component {
         {
           text: "Tak",
           onPress: () => {
-            Navigation.popToRoot(this.props.componentId);
+            Navigation.setStackRoot(this.props.componentId, [
+              {
+                component: {
+                  name: "MySetsScreen"
+                }
+              }
+            ]);
           }
         }
       ],
@@ -90,7 +96,9 @@ export default class LearnScreen extends Component {
         <View style={styles.container}>
           {this.state.showHint ? (
             <View style={styles.header}>
-              <Text>Przesuń kartę w prawo lub lewo</Text>
+              <Text style={styles.headerTxt}>
+                Przesuń kartę w prawo lub lewo
+              </Text>
             </View>
           ) : null}
 
@@ -134,6 +142,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
+  headerTxt: {
+    fontFamily: "Lato-Bold",
+    color: "#fff"
+  },
   content: {
     flex: 7,
     backgroundColor: "#5388d0",
@@ -150,8 +162,8 @@ const styles = StyleSheet.create({
     lineHeight: 220,
     textAlign: "center",
     fontSize: 35,
-    fontFamily: "System",
-    color: "#ffffff",
+    fontFamily: "Lato-Bold",
+    color: "#fff",
     backgroundColor: "transparent"
   },
   noMoreCards: {
