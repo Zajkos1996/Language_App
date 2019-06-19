@@ -28,18 +28,20 @@ export default class TestScreen extends Component {
   }
 
   goToResultScreen = () => {
-    Navigation.push(this.props.componentId, {
-      component: {
-        name: "ResultFromTestScreen",
-        passProps: {
-          score: this.state.score,
-          availablePoints: 10,
-          lastScreen: "TestScreen",
-          wordsAndDefinitions: this.state.wordsAndDefinitions,
-          allSetsFromDb: this.state.sets
+    Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: "ResultFromTestScreen",
+          passProps: {
+            score: this.state.score,
+            availablePoints: 10,
+            lastScreen: "TestScreen",
+            wordsAndDefinitions: this.state.wordsAndDefinitions,
+            allSetsFromDb: this.state.sets
+          }
         }
       }
-    });
+    ]);
   };
 
   componentDidMount = async () => {
@@ -207,7 +209,13 @@ export default class TestScreen extends Component {
         {
           text: "Tak",
           onPress: () => {
-            Navigation.popToRoot(this.props.componentId);
+            Navigation.setStackRoot(this.props.componentId, [
+              {
+                component: {
+                  name: "MySetsScreen"
+                }
+              }
+            ]);
           }
         }
       ],
@@ -252,8 +260,9 @@ export default class TestScreen extends Component {
           </ScrollView>
           <Button
             title="Zakończ test"
+            titleStyle={{ fontFamily: "Lato-Bold" }}
             onPress={this.onFinishTest}
-            buttonStyle={{ marginTop: 10, fontFamily: "Lato-Bold" }}
+            buttonStyle={{ marginTop: 10 }}
           />
         </View>
       </View>

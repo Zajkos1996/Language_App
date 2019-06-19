@@ -25,18 +25,20 @@ export default class WritingScreen extends Component {
   }
 
   goToResultScreen = () => {
-    Navigation.push(this.props.componentId, {
-      component: {
-        name: "ResultFromTestScreen",
-        passProps: {
-          score: this.state.score,
-          availablePoints: this.state.wordsAndDefinitions.length,
-          lastScreen: "WritingScreen",
-          wordsAndDefinitions: this.state.wordsAndDefinitions,
-          allSetsFromDb: this.state.sets
+    Navigation.setStackRoot(this.props.componentId, [
+      {
+        component: {
+          name: "ResultFromTestScreen",
+          passProps: {
+            score: this.state.score,
+            availablePoints: this.state.wordsAndDefinitions.length,
+            lastScreen: "WritingScreen",
+            wordsAndDefinitions: this.state.wordsAndDefinitions,
+            allSetsFromDb: this.state.sets
+          }
         }
       }
-    });
+    ]);
   };
 
   checkAnswer = async () => {
@@ -96,7 +98,13 @@ export default class WritingScreen extends Component {
         {
           text: "Tak",
           onPress: () => {
-            Navigation.popToRoot(this.props.componentId);
+            Navigation.setStackRoot(this.props.componentId, [
+              {
+                component: {
+                  name: "MySetsScreen"
+                }
+              }
+            ]);
           }
         }
       ],
@@ -152,12 +160,12 @@ export default class WritingScreen extends Component {
 
           <Button
             title="Dalej"
+            titleStyle={{ fontFamily: "Lato-Bold" }}
             disabled={this.state.isAnswered}
             onPress={this.checkAnswer}
             buttonStyle={{
               backgroundColor: "#4E046D",
-              paddingHorizontal: 30,
-              fontFamily: "Lato-Bold"
+              paddingHorizontal: 30
             }}
           />
 
