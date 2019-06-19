@@ -14,6 +14,7 @@
     "react-native-elements": "^1.1.0",
     "react-native-navigation": "^2.1.2",
     "react-native-rename": "^2.4.1",
+    "react-native-splash-screen": "^3.2.0",
     "react-native-sqlite-storage": "^3.3.10",
     "react-native-tiles": "^1.0.1",
     "react-native-vector-icons": "^6.4.2",

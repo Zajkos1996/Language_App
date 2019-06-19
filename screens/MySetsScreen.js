@@ -10,6 +10,7 @@ import {
 import { Navigation } from "react-native-navigation";
 import SQLite from "react-native-sqlite-storage";
 import { Header } from "react-native-elements";
+import SplashScreen from "react-native-splash-screen";
 
 var db = SQLite.openDatabase({
   name: "md.db",
@@ -45,7 +46,8 @@ export default class MySetsScreen extends Component {
   }
 
   async componentDidMount() {
-    this.downloadDataFromDatabase();
+    await this.downloadDataFromDatabase();
+    SplashScreen.hide();
   }
 
   renderSets = () => {
